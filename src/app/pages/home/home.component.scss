@@ -1,0 +1,271 @@
+// Swiper Styles
+.categories-swiper,
+.products-swiper {
+  --swiper-navigation-size: 48px;
+  --swiper-navigation-color: #dc2626;
+  --swiper-pagination-color: #dc2626;
+  --swiper-pagination-bullet-inactive-color: #d1d5db;
+  --swiper-pagination-bullet-inactive-opacity: 0.5;
+  
+  position: relative;
+  
+  .swiper-slide {
+    height: auto;
+  }
+  
+  .swiper-button-next,
+  .swiper-button-prev {
+    background: white !important;
+    border: 2px solid #e5e7eb !important;
+    border-radius: 50% !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.3s ease !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 48px !important;
+    height: 48px !important;
+    z-index: 10 !important;
+    
+    &:hover {
+      background: #f3f4f6 !important;
+      border-color: #d1d5db !important;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    &::after {
+      font-size: 18px !important;
+      font-weight: bold !important;
+      color: #dc2626 !important;
+    }
+  }
+  
+  .swiper-button-prev {
+    left: -24px !important;
+    
+    @media (max-width: 1024px) {
+      left: -20px !important;
+    }
+    
+    @media (max-width: 768px) {
+      left: -16px !important;
+    }
+  }
+  
+  .swiper-button-next {
+    right: -24px !important;
+    
+    @media (max-width: 1024px) {
+      right: -20px !important;
+    }
+    
+    @media (max-width: 768px) {
+      right: -16px !important;
+    }
+  }
+  
+  .swiper-pagination {
+    bottom: -30px;
+    
+    .swiper-pagination-bullet {
+      width: 10px;
+      height: 10px;
+      margin: 0 4px;
+      transition: all 0.3s ease;
+      
+      &.swiper-pagination-bullet-active {
+        background: #dc2626;
+        transform: scale(1.2);
+      }
+    }
+  }
+}
+
+// Custom Swiper Navigation (if needed)
+.swiper-custom-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #e5e7eb;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+  
+  svg {
+    color: #6b7280;
+    transition: color 0.3s ease;
+  }
+  
+  &:hover svg {
+    color: #dc2626;
+  }
+}
+
+// Section Headers
+.heading-2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #1f2937;
+  margin: 0;
+  
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+}
+
+// Card Hover Effects
+.card-hover {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+}
+
+// Animations
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.8s ease-out forwards;
+}
+
+// Button Styles
+.btn-primary {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  
+  &:hover {
+    background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(220, 38, 38, 0.3);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-outline {
+  background: transparent;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s ease;
+  border: 2px solid white;
+  cursor: pointer;
+  
+  &:hover {
+    background: white;
+    color: #dc2626;
+    transform: translateY(-2px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-animate {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+// Gradient Backgrounds
+.bg-gradient-hero {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%);
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .slider-nav-btn {
+    width: 40px;
+    height: 40px;
+    
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
+  
+  .slider-track {
+    gap: 1rem;
+  }
+  
+  .slider-item {
+    min-width: 280px;
+  }
+}
+
+// Loading States
+.slider-track {
+  &.loading {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+}
+
+// Smooth Scrolling
+html {
+  scroll-behavior: smooth;
+}
+
+// Focus States for Accessibility
+.slider-nav-btn:focus {
+  outline: 2px solid #dc2626;
+  outline-offset: 2px;
+}
+
+a:focus {
+  outline: 2px solid #dc2626;
+  outline-offset: 2px;
+} 

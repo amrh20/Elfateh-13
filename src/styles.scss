@@ -1,3 +1,8 @@
+/* Swiper CSS */
+@use 'swiper/css';
+@use 'swiper/css/navigation';
+@use 'swiper/css/pagination';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
