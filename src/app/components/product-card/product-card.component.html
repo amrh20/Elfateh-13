@@ -1,0 +1,89 @@
+<div class="product-card group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden">
+  <!-- Product Image -->
+  <div class="relative overflow-hidden bg-gray-100">
+    <img [src]="product.image" [alt]="product.name" 
+         class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-700">
+    
+    <!-- Sale Badge -->
+    <div *ngIf="product.isOnSale" 
+         class="absolute top-4 right-4 bg-red-600 text-white px-3 py-1.5 rounded-lg text-sm font-bold shadow-lg">
+      {{ product.discountPercentage }}% خصم
+    </div>
+    
+    <!-- Wishlist Button -->
+    <button (click)="toggleWishlist()" 
+            class="absolute top-4 left-4 p-2.5 bg-white/95 backdrop-blur-sm rounded-full shadow-lg hover:bg-red-50 transition-all duration-300 hover:scale-110">
+      <svg class="w-5 h-5" [class.text-red-600]="isInWishlist" [class.text-gray-500]="!isInWishlist" 
+           fill="currentColor" viewBox="0 0 24 24">
+        <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+        </path>
+      </svg>
+    </button>
+
+    <!-- Quick View Overlay -->
+    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+      <a [routerLink]="['/product', product.id]" 
+         class="bg-white text-red-600 px-6 py-3 rounded-full font-semibold hover:bg-red-600 hover:text-white transition-all duration-300 transform hover:scale-105 shadow-lg">
+        عرض سريع
+      </a>
+    </div>
+  </div>
+
+  <!-- Product Info -->
+  <div class="p-6">
+    <!-- Product Title -->
+    <h3 class="text-xl font-bold text-gray-800 mb-3 line-clamp-2 group-hover:text-red-600 transition-colors duration-300 leading-tight">
+      {{ product.name }}
+    </h3>
+    
+    <!-- Product Description -->
+    <p class="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed">
+      {{ product.description }}
+    </p>
+
+    <!-- Rating -->
+    <div class="flex items-center mb-4">
+      <div class="flex text-yellow-400">
+        <svg *ngFor="let star of [1,2,3,4,5]" class="w-4 h-4" 
+             [class.text-yellow-400]="star <= product.rating" 
+             [class.text-gray-300]="star > product.rating"
+             fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z">
+          </path>
+        </svg>
+      </div>
+      <span class="text-sm text-gray-500 mr-2 font-medium">({{ product.reviews }})</span>
+    </div>
+
+    <!-- Price and Brand -->
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center space-x-3 space-x-reverse">
+        <span class="text-2xl font-bold text-red-600">
+          {{ product.price }} ج.م
+        </span>
+        <span *ngIf="product.originalPrice" 
+              class="text-lg text-gray-400 line-through font-medium">
+          {{ product.originalPrice }} ج.م
+        </span>
+      </div>
+      
+      <span class="text-sm text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full font-medium">
+        {{ product.brand }}
+      </span>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex space-x-3 space-x-reverse">
+      <button (click)="addToCart()" 
+              [disabled]="!product.inStock"
+              class="flex-1 bg-red-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg">
+        {{ product.inStock ? 'أضف للسلة' : 'غير متوفر' }}
+      </button>
+      
+      <a [routerLink]="['/product', product.id]" 
+         class="border-2 border-red-600 text-red-600 py-3 px-4 rounded-xl font-semibold hover:bg-red-600 hover:text-white transition-all duration-300 transform hover:scale-105">
+        التفاصيل
+      </a>
+    </div>
+  </div>
+</div> 

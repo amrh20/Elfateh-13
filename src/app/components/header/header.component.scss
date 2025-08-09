@@ -1,0 +1,122 @@
+// Header Component Styles
+.header {
+  &-logo {
+    transition: all 0.3s ease;
+    
+    img {
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+      transition: all 0.3s ease;
+    }
+    
+    &:hover {
+      transform: scale(1.05);
+      
+      img {
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+      }
+    }
+  }
+  
+  &-nav {
+    &-link {
+      position: relative;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: scale(1.05);
+      }
+      
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        transition: width 0.3s ease;
+      }
+      
+      &:hover::after,
+      &.active::after {
+        width: 100%;
+      }
+    }
+  }
+  
+  &-icon {
+    &-container {
+      position: relative;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+    
+    &-badge {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      
+      @keyframes pulse {
+        0%, 100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
+    }
+    
+    &-hover {
+      transition: opacity 0.3s ease;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .header {
+    &-logo {
+      img {
+        height: 3rem;
+      }
+      
+      span {
+        font-size: 1.25rem;
+      }
+    }
+    
+    &-nav {
+      display: none;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    &-logo {
+      img {
+        height: 2.5rem;
+      }
+    }
+  }
+}
+
+// Custom gradient text
+.text-gradient {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// Enhanced backdrop blur
+.backdrop-blur-md {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+// Custom shadow
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+} 
