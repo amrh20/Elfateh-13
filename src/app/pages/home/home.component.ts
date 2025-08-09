@@ -41,83 +41,33 @@ import { ProductCardComponent } from '../../components/product-card/product-card
     </section>
 
     <!-- Current Order Section -->
-    <section *ngIf="currentOrder" class="py-12 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100">
+    <section *ngIf="currentOrder" class="py-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100">
       <div class="container mx-auto px-4">
-        <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 border border-blue-100">
-          <div class="flex items-center justify-between mb-6">
+        <div class="bg-white rounded-xl shadow-md p-4 border border-blue-100">
+          <div class="flex items-center justify-between">
+            <!-- Order Info -->
             <div class="flex items-center space-x-4 space-x-reverse">
-              <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                 </svg>
               </div>
               <div>
-                <h2 class="text-2xl font-bold text-gray-900">طلبك الحالي</h2>
-                <p class="text-gray-600">رقم الطلب: {{ currentOrder.id }}</p>
+                <h3 class="font-semibold text-gray-900">طلبك الحالي</h3>
+                <p class="text-sm text-gray-600">{{ currentOrder.items.length }} منتج - {{ currentOrder.totalAmount.toFixed(2) }} ج.م</p>
               </div>
             </div>
-            <div class="text-left">
-              <span [class]="'px-4 py-2 rounded-full text-sm font-medium ' + orderService.getOrderStatusColor(currentOrder.status)">
+
+            <!-- Status -->
+            <div class="flex items-center space-x-4 space-x-reverse">
+              <span [class]="'px-3 py-1 rounded-full text-xs font-medium ' + orderService.getOrderStatusColor(currentOrder.status)">
                 {{ orderService.getOrderStatusText(currentOrder.status) }}
               </span>
+              <a [routerLink]="['/track-order']" 
+                 class="btn-primary px-4 py-2 rounded-lg text-sm font-medium">
+                تتبع الطلب
+              </a>
             </div>
-          </div>
-
-          <!-- Order Items -->
-          <div class="grid md:grid-cols-2 gap-6 mb-6">
-            <div>
-              <h3 class="text-lg font-semibold mb-4 text-gray-900">المنتجات المطلوبة</h3>
-              <div class="space-y-3">
-                <div *ngFor="let item of currentOrder.items" class="flex items-center space-x-3 space-x-reverse bg-gray-50 rounded-lg p-3">
-                  <img [src]="item.product.image" [alt]="item.product.name" class="w-12 h-12 rounded-lg object-cover">
-                  <div class="flex-1">
-                    <h4 class="font-medium text-gray-900">{{ item.product.name }}</h4>
-                    <p class="text-sm text-gray-600">الكمية: {{ item.quantity }}</p>
-                  </div>
-                  <div class="text-left">
-                    <p class="font-semibold text-gray-900">{{ (item.product.price * item.quantity).toFixed(2) }} ج.م</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h3 class="text-lg font-semibold mb-4 text-gray-900">تفاصيل الطلب</h3>
-              <div class="space-y-3">
-                <div class="flex justify-between">
-                  <span class="text-gray-600">إجمالي المبلغ:</span>
-                  <span class="font-semibold text-gray-900">{{ currentOrder.totalAmount.toFixed(2) }} ج.م</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">تاريخ الطلب:</span>
-                  <span class="text-gray-900">{{ currentOrder.orderDate | date:'dd/MM/yyyy' }}</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">موعد التوصيل:</span>
-                  <span class="text-gray-900">{{ currentOrder.deliveryDate | date:'dd/MM/yyyy' }}</span>
-                </div>
-                <div class="flex justify-between">
-                  <span class="text-gray-600">طريقة الدفع:</span>
-                  <span class="text-gray-900">{{ currentOrder.paymentMethod === 'cash' ? 'نقداً' : 'بطاقة ائتمان' }}</span>
-                </div>
-                <div *ngIf="currentOrder.trackingNumber" class="flex justify-between">
-                  <span class="text-gray-600">رقم التتبع:</span>
-                  <span class="font-mono text-blue-600">{{ currentOrder.trackingNumber }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Action Buttons -->
-          <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a [routerLink]="['/track-order']" 
-               class="btn-primary px-6 py-3 rounded-lg font-medium text-center">
-              تتبع الطلب بالتفصيل
-            </a>
-            <a [routerLink]="['/profile']" 
-               class="btn-outline px-6 py-3 rounded-lg font-medium text-center border-gray-300 text-gray-700 hover:bg-gray-50">
-              عرض جميع الطلبات
-            </a>
           </div>
         </div>
       </div>

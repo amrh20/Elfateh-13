@@ -140,6 +140,97 @@ export class ProductService {
         'القوة': '1800 وات',
         'السعة': '200 مل'
       }
+    },
+    {
+      id: 7,
+      name: 'طقم أواني طبخ',
+      description: 'طقم أواني طبخ عالية الجودة من الستانلس ستيل',
+      price: 599,
+      originalPrice: 799,
+      image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400',
+      category: 'أدوات مطبخ',
+      subCategory: 'أواني طبخ',
+      brand: 'تيفال',
+      inStock: true,
+      rating: 4.6,
+      reviews: 89,
+      isOnSale: true,
+      discountPercentage: 25,
+      images: [
+        'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400'
+      ],
+      specifications: {
+        'العدد': '5 قطع',
+        'المادة': 'ستانلس ستيل',
+        'النوع': 'غير لاصق'
+      }
+    },
+    {
+      id: 8,
+      name: 'خلاط يدوي',
+      description: 'خلاط يدوي قوي للعجائن والصلصات',
+      price: 199,
+      image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400',
+      category: 'أدوات مطبخ',
+      subCategory: 'أجهزة طبخ',
+      brand: 'كينوود',
+      inStock: true,
+      rating: 4.4,
+      reviews: 45,
+      isOnSale: false,
+      images: [
+        'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400'
+      ],
+      specifications: {
+        'القوة': '300 وات',
+        'الملحقات': '3 قطع'
+      }
+    },
+    {
+      id: 9,
+      name: 'طقم سكاكين',
+      description: 'طقم سكاكين احترافية من الفولاذ المقاوم للصدأ',
+      price: 349,
+      image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400',
+      category: 'أدوات مطبخ',
+      subCategory: 'أدوات تقطيع',
+      brand: 'فيكتورينوكس',
+      inStock: true,
+      rating: 4.7,
+      reviews: 67,
+      isOnSale: false,
+      images: [
+        'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400'
+      ],
+      specifications: {
+        'العدد': '6 قطع',
+        'المادة': 'فولاذ مقاوم للصدأ',
+        'الضمان': '5 سنوات'
+      }
+    },
+    {
+      id: 10,
+      name: 'صينية خبز',
+      description: 'صينية خبز من السيليكون المقاوم للحرارة',
+      price: 89,
+      originalPrice: 120,
+      image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400',
+      category: 'أدوات مطبخ',
+      subCategory: 'أدوات خبز',
+      brand: 'سيلكون',
+      inStock: true,
+      rating: 4.2,
+      reviews: 34,
+      isOnSale: true,
+      discountPercentage: 26,
+      images: [
+        'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400'
+      ],
+      specifications: {
+        'الحجم': '30×20 سم',
+        'المادة': 'سيليكون',
+        'مقاوم للحرارة': 'حتى 220°م'
+      }
     }
   ];
 
@@ -169,6 +260,19 @@ export class ProductService {
         { id: 7, name: 'مكاوي', productCount: 7, products: [] },
         { id: 8, name: 'خلاطات', productCount: 5, products: [] },
         { id: 9, name: 'مطاحن', productCount: 4, products: [] }
+      ]
+    },
+    {
+      id: 3,
+      name: 'أدوات مطبخ',
+      image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400',
+      description: 'أدوات الطبخ والطهي الاحترافية',
+      productCount: 4,
+      subCategories: [
+        { id: 10, name: 'أواني طبخ', productCount: 12, products: [] },
+        { id: 11, name: 'أدوات تقطيع', productCount: 8, products: [] },
+        { id: 12, name: 'أجهزة طبخ', productCount: 6, products: [] },
+        { id: 13, name: 'أدوات خبز', productCount: 5, products: [] }
       ]
     }
   ];
