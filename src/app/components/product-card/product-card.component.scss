@@ -1,11 +1,182 @@
 // Product Card Component Styles
 .product-card {
   position: relative;
-  border: 1px solid rgba(229, 231, 235, 0.5);
+  transition: all 0.3s ease;
   
   &:hover {
-    border-color: rgba(220, 38, 38, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   }
+  
+  // تأثير النص عند التحديث
+  .text-update {
+    animation: textUpdate 0.3s ease-in-out;
+  }
+  
+  // تأثير القلب عند التحديث
+  .heart-update {
+    animation: heartBeat 0.4s ease-in-out;
+  }
+  
+  // تأثير الزر عند النقر
+  .button-click {
+    animation: buttonClick 0.2s ease-in-out;
+  }
+}
+
+// تحسين مظهر النص المقتطع
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  
+  // إضافة تأثير عند التمرير
+  &:hover {
+    color: #dc2626; // red-600
+    transition: color 0.3s ease;
+  }
+}
+
+// تأثيرات الوصف
+.product-description {
+  position: relative;
+  
+  &:hover {
+    .description-tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+  }
+}
+
+// تلميح الوصف الكامل
+.description-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  z-index: 50;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 1rem;
+    border: 0.5rem solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.9);
+  }
+}
+
+// تحسين مظهر tooltip الوصف
+.product-card .relative {
+  .bg-black\/90 {
+    animation: tooltipFadeIn 0.3s ease-out;
+    max-width: 300px;
+    word-wrap: break-word;
+    
+    // تحسين المظهر على الشاشات الصغيرة
+    @media (max-width: 640px) {
+      max-width: 250px;
+      left: -50px;
+      right: -50px;
+    }
+  }
+  
+  // سهم يشير لأسفل
+  .border-l-4.border-r-4.border-t-4 {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  }
+}
+
+// أنيميشن ظهور tooltip
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// أنيميشن تحديث النص
+@keyframes textUpdate {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateY(-3px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// أنيميشن نبض القلب
+@keyframes heartBeat {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.3);
+  }
+  50% {
+    transform: scale(0.9);
+  }
+  75% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+// أنيميشن النقر على الزر
+@keyframes buttonClick {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+// تأثيرات إضافية للصور
+.product-card img {
+  transition: transform 0.5s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+// تأثيرات الأزرار
+.product-card button {
+  position: relative;
+  overflow: hidden;
   
   &::before {
     content: '';
@@ -14,105 +185,167 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-    transition: left 0.6s ease-in-out;
-    z-index: 1;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
   }
   
   &:hover::before {
     left: 100%;
   }
   
-  // Image container
-  .relative {
-    position: relative;
-    z-index: 2;
-  }
-  
-  // Content area
-  .p-6 {
-    position: relative;
-    z-index: 2;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.95), rgba(255,255,255,1));
+  &:active {
+    transform: scale(0.98);
   }
 }
 
-// Line clamp utility
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-// Enhanced hover effects
-.group:hover {
-  .product-card {
-    transform: translateY(-8px) scale(1.02);
-  }
-}
-
-// Sale badge animation
-.bg-red-600 {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.8;
-  }
-}
-
-// Quick view overlay
-.absolute.inset-0 {
-  backdrop-filter: blur(2px);
-}
-
-// Button hover effects
-button, a {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+// تأثيرات القلب
+.product-card .wishlist-button {
+  transition: all 0.3s ease;
   
   &:hover {
-    transform: translateY(-2px);
+    background: rgba(239, 68, 68, 0.1);
+    transform: scale(1.1);
+  }
+  
+  &.in-wishlist {
+    background: rgba(239, 68, 68, 0.15);
+    
+    svg {
+      animation: heartGlow 2s ease-in-out infinite;
+    }
   }
 }
 
-// Rating stars
-.text-yellow-400 {
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+// أنيميشن توهج القلب
+@keyframes heartGlow {
+  0%, 100% {
+    filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.8));
+  }
 }
 
-// Price styling
-.text-red-600 {
-  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+// تأثيرات السعر
+.product-card .price {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.05);
+  }
 }
 
-// Brand badge
-.bg-gray-100 {
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(229, 231, 235, 0.5);
+// تأثيرات التقييم
+.product-card .rating {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: scale(1.1);
+  }
 }
 
-// Responsive adjustments
+// تأثيرات الشارة
+.product-card .sale-badge {
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+// تأثيرات التحميل
+.product-card.loading {
+  opacity: 0.7;
+  pointer-events: none;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #ef4444;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// تأثيرات الاستجابة
 @media (max-width: 768px) {
   .product-card {
-    .p-6 {
-      padding: 1rem;
+    &:hover {
+      transform: none;
     }
     
-    h3 {
-      font-size: 1.125rem;
+    .wishlist-button {
+      padding: 0.75rem;
+      
+      svg {
+        width: 1rem;
+        height: 1rem;
+      }
     }
     
-    .text-2xl {
-      font-size: 1.5rem;
+    // تحسين مظهر النص على الشاشات الصغيرة
+    .line-clamp-1 {
+      font-size: 0.875rem;
+      line-height: 1.3;
+    }
+    
+    // تحسين tooltip على الشاشات الصغيرة
+    .bg-black\/90 {
+      max-width: 200px;
+      left: -25px;
+      right: -25px;
+      font-size: 0.75rem;
+      padding: 0.5rem;
     }
   }
+}
+
+// تأثيرات الوضع المظلم (إذا كان مدعوماً)
+.product-card.dark-mode {
+  background: #1f2937;
+  color: #f9fafb;
+  
+  .product-info {
+    color: #d1d5db;
+  }
+  
+  .price {
+    color: #f87171;
+  }
+}
+
+// تأثيرات الحالة النشطة
+.product-card.active {
+  border: 2px solid #ef4444;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
+// تأثيرات الحالة المعطلة
+.product-card.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+  
+  .actions button {
+    background: #9ca3af;
+    cursor: not-allowed;
+  }
 } 
+.absolute {
+  position: absolute !important;
+}

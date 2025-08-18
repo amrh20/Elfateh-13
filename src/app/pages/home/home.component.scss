@@ -81,62 +81,181 @@
 }
 
 // Custom Swiper Navigation (if needed)
-.swiper-custom-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
+.swiper-button-next,
+.swiper-button-prev {
+  background: rgba(239, 68, 68, 0.9);
+  border-radius: 50%;
   width: 48px;
   height: 48px;
-  border-radius: 50%;
-  background: white;
-  border: 2px solid #e5e7eb;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  
+  &::after {
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+  }
   
   &:hover {
-    background: #f3f4f6;
-    border-color: #d1d5db;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    background: rgba(239, 68, 68, 1);
+    transform: scale(1.1);
+    transition: all 0.3s ease;
   }
   
-  svg {
-    color: #6b7280;
-    transition: color 0.3s ease;
-  }
-  
-  &:hover svg {
-    color: #dc2626;
+  &:focus {
+    outline: 2px solid rgba(239, 68, 68, 0.5);
+    outline-offset: 2px;
   }
 }
 
-// Section Headers
-.heading-2 {
-  font-size: 2.5rem;
-  font-weight: 800;
+// Simple Categories Section Styling
+.categories-swiper {
+  .swiper-slide {
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-4px);
+    }
+  }
+  
+  // Simple pagination
+  .swiper-pagination {
+    bottom: -40px;
+    
+    .swiper-pagination-bullet {
+      width: 8px;
+      height: 8px;
+      background: rgba(156, 163, 175, 0.4);
+      border-radius: 50%;
+      margin: 0 4px;
+      transition: all 0.3s ease;
+      
+      &.swiper-pagination-bullet-active {
+        background: #ef4444;
+        transform: scale(1.2);
+      }
+      
+      &:hover {
+        background: rgba(239, 68, 68, 0.6);
+      }
+    }
+  }
+}
+
+// Simple card hover effects
+.group {
+  &:hover {
+    .group-hover\:text-red-600 {
+      color: #dc2626;
+    }
+    
+    .group-hover\:shadow-lg {
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .group-hover\:scale-105 {
+      transform: scale(1.05);
+    }
+  }
+}
+
+// Simple transitions
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.duration-200 {
+  transition-duration: 200ms;
+}
+
+.duration-300 {
+  transition-duration: 300ms;
+}
+
+// Simple shadows
+.shadow-sm {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+// Simple borders
+.border-gray-100 {
+  border-color: #f3f4f6;
+}
+
+// Simple button hover
+.bg-red-600:hover {
+  background-color: #dc2626;
+}
+
+// Simple text colors
+.text-gray-800 {
   color: #1f2937;
-  margin: 0;
+}
+
+.text-gray-600 {
+  color: #4b5563;
+}
+
+.text-gray-700 {
+  color: #374151;
+}
+
+// Simple responsive design
+@media (max-width: 768px) {
+  .text-3xl.md\:text-4xl {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
   
-  @media (max-width: 768px) {
-    font-size: 2rem;
+  .text-lg {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+  
+  .py-20 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+  
+  .mb-16 {
+    margin-bottom: 2rem;
   }
 }
 
-// Card Hover Effects
-.card-hover {
-  transition: all 0.3s ease;
+@media (max-width: 640px) {
+  .text-3xl.md\:text-4xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
   
-  &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  .text-lg {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+  
+  .py-20 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  
+  .mb-16 {
+    margin-bottom: 1.5rem;
+  }
+  
+  .h-48 {
+    height: 10rem;
+  }
+  
+  .p-6 {
+    padding: 1rem;
   }
 }
 
-// Animations
+// Enhanced Why Choose Us Section Animations
 @keyframes float {
   0%, 100% {
     transform: translateY(0px);
@@ -146,126 +265,238 @@
   }
 }
 
+@keyframes slide-down {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 @keyframes fade-in-up {
-  from {
+  0% {
     opacity: 0;
     transform: translateY(30px);
   }
-  to {
+  100% {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -30px, 0);
+  }
+  70% {
+    transform: translate3d(0, -15px, 0);
+  }
+  90% {
+    transform: translate3d(0, -4px, 0);
+  }
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+// Apply animations to elements
 .animate-float {
   animation: float 6s ease-in-out infinite;
+}
+
+.animate-slide-down {
+  animation: slide-down 2s ease-out infinite;
+}
+
+.animate-slide-up {
+  animation: slide-up 2s ease-out infinite;
+  animation-delay: 1s;
 }
 
 .animate-fade-in-up {
   animation: fade-in-up 0.8s ease-out forwards;
 }
 
-// Button Styles
-.btn-primary {
-  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  text-decoration: none;
-  display: inline-block;
-  transition: all 0.3s ease;
-  border: none;
-  cursor: pointer;
-  
-  &:hover {
-    background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(220, 38, 38, 0.3);
-  }
-  
-  &:active {
-    transform: translateY(0);
-  }
+.animate-bounce {
+  animation: bounce 2s infinite;
 }
 
-.btn-outline {
-  background: transparent;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  text-decoration: none;
-  display: inline-block;
-  transition: all 0.3s ease;
-  border: 2px solid white;
-  cursor: pointer;
-  
-  &:hover {
-    background: white;
-    color: #dc2626;
-    transform: translateY(-2px);
-  }
-  
-  &:active {
-    transform: translateY(0);
-  }
+.animate-ping {
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
-.btn-animate {
-  transition: all 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-2px);
-  }
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-// Gradient Backgrounds
-.bg-gradient-hero {
-  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 50%, #991b1b 100%);
+// Enhanced hover effects for feature cards
+.group:hover .group-hover\:text-red-200 {
+  color: #fecaca;
 }
 
-// Responsive Design
+.group:hover .group-hover\:text-green-200 {
+  color: #bbf7d0;
+}
+
+.group:hover .group-hover\:text-blue-200 {
+  color: #bfdbfe;
+}
+
+// Smooth transitions for all interactive elements
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+// Enhanced button hover effects
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+// Gradient text effect
+.bg-gradient-to-r {
+  background: linear-gradient(to right, var(--tw-gradient-stops));
+}
+
+.from-white {
+  --tw-gradient-from: #ffffff;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(255, 255, 255, 0));
+}
+
+.to-red-100 {
+  --tw-gradient-to: #fee2e2;
+}
+
+.bg-clip-text {
+  background-clip: text;
+}
+
+.text-transparent {
+  color: transparent;
+}
+
+// Enhanced backdrop blur effects
+.backdrop-blur-md {
+  backdrop-filter: blur(12px);
+}
+
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+}
+
+// Enhanced shadows
+.shadow-2xl {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.group-hover\:shadow-2xl {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.group-hover\:shadow-white\/20 {
+  box-shadow: 0 25px 50px -12px rgba(255, 255, 255, 0.2);
+}
+
+// Enhanced border effects
+.border-white\/20 {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+// Enhanced transform effects
+.group-hover\:rotate-12 {
+  transform: rotate(12deg);
+}
+
+.group-hover\:scale-105 {
+  transform: scale(1.05);
+}
+
+// Enhanced opacity transitions
+.group-hover\:opacity-100 {
+  opacity: 1;
+}
+
+// Enhanced line animation
+.group:hover .group-hover\:w-16 {
+  width: 4rem;
+}
+
+// Responsive adjustments for the enhanced section
 @media (max-width: 768px) {
-  .slider-nav-btn {
-    width: 40px;
-    height: 40px;
-    
-    svg {
-      width: 20px;
-      height: 20px;
-    }
+  .text-5xl {
+    font-size: 2.5rem;
+    line-height: 1;
   }
   
-  .slider-track {
-    gap: 1rem;
+  .text-xl {
+    font-size: 1.125rem;
+    line-height: 1.75;
   }
   
-  .slider-item {
-    min-width: 280px;
+  .w-24 {
+    width: 5rem;
+  }
+  
+  .h-24 {
+    height: 5rem;
+  }
+  
+  .w-16 {
+    width: 4rem;
+  }
+  
+  .h-16 {
+    height: 4rem;
   }
 }
 
-// Loading States
-.slider-track {
-  &.loading {
-    opacity: 0.7;
-    pointer-events: none;
+@media (max-width: 640px) {
+  .text-5xl {
+    font-size: 2rem;
   }
-}
-
-// Smooth Scrolling
-html {
-  scroll-behavior: smooth;
-}
-
-// Focus States for Accessibility
-.slider-nav-btn:focus {
-  outline: 2px solid #dc2626;
-  outline-offset: 2px;
-}
-
-a:focus {
-  outline: 2px solid #dc2626;
-  outline-offset: 2px;
+  
+  .text-xl {
+    font-size: 1rem;
+  }
+  
+  .py-24 {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+  
+  .mb-20 {
+    margin-bottom: 3rem;
+  }
 } 
