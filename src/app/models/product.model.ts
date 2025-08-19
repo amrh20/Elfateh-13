@@ -19,19 +19,25 @@ export interface Product {
 }
 
 export interface SubCategory {
-  id: number;
+  _id: string;
   name: string;
-  productCount: number;
+  description: string;
+  image: string;
+  isActive: boolean;
+  parent: string;
+  ancestors: string[];
   products: Product[];
 }
 
 export interface Category {
-  id: number;
+  _id: string;
   name: string;
   image: string;
   description: string;
-  productCount: number;
-  subCategories?: SubCategory[];
+  isActive: boolean;
+  parent: string | null;
+  ancestors: string[];
+  subcategories: string[];
 }
 
 export interface CartItem {

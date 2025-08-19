@@ -1,12 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { map, catchError } from 'rxjs/operators';
 import { Product, Category, SubCategory } from '../models/product.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  private products: Product[] = [
+  constructor(private http: HttpClient) {}
+
+  // Fallback mock products for development/testing
+  private fallbackProducts: Product[] = [
     {
       id: 1,
       name: 'منظف أرضيات لافندر',
@@ -52,270 +57,192 @@ export class ProductService {
         'الحجم': '750 مل',
         'النوع': 'سائل'
       }
-    },
-    {
-      id: 3,
-      name: 'منظف حمامات',
-      description: 'منظف حمامات قوي يزيل البقع والرواسب بسهولة',
-      price: 40,
-      originalPrice: 55,
-      image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400',
-      category: 'منظفات',
-      subCategory: 'منظفات حمامات',
-      brand: 'ديتول',
-      inStock: true,
-      rating: 4.7,
-      reviews: 156,
-      isOnSale: true,
-      discountPercentage: 27,
-      images: [
-        'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400'
-      ],
-      specifications: {
-        'الحجم': '1 لتر',
-        'النوع': 'سائل'
-      }
-    },
-    {
-      id: 4,
-      name: 'مكنسة كهربائية',
-      description: 'مكنسة كهربائية قوية لتنظيف شامل للمنزل',
-      price: 899,
-      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400',
-      category: 'أدوات منزلية',
-      subCategory: 'مكنسات',
-      brand: 'إلكترولوكس',
-      inStock: true,
-      rating: 4.8,
-      reviews: 203,
-      isOnSale: false,
-      images: [
-        'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400'
-      ],
-      specifications: {
-        'القوة': '2000 وات',
-        'النوع': 'مكنسة عادية'
-      }
-    },
-    {
-      id: 5,
-      name: 'غسالة أطباق',
-      description: 'غسالة أطباق حديثة بتقنيات متطورة',
-      price: 2499,
-      originalPrice: 2999,
-      image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400',
-      category: 'أدوات منزلية',
-      subCategory: 'غسالات',
-      brand: 'بوش',
-      inStock: true,
-      rating: 4.9,
-      reviews: 89,
-      isOnSale: true,
-      discountPercentage: 17,
-      images: [
-        'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400'
-      ],
-      specifications: {
-        'السعة': '12 فرد',
-        'الطاقة': 'A++'
-      }
-    },
-    {
-      id: 6,
-      name: 'مكواة بخار',
-      description: 'مكواة بخار احترافية لجميع أنواع الأقمشة',
-      price: 299,
-      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400',
-      category: 'أدوات منزلية',
-      subCategory: 'مكاوي',
-      brand: 'فيليبس',
-      inStock: true,
-      rating: 4.3,
-      reviews: 67,
-      isOnSale: false,
-      images: [
-        'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400'
-      ],
-      specifications: {
-        'القوة': '1800 وات',
-        'السعة': '200 مل'
-      }
-    },
-    {
-      id: 7,
-      name: 'طقم أواني طبخ',
-      description: 'طقم أواني طبخ عالية الجودة من الستانلس ستيل',
-      price: 599,
-      originalPrice: 799,
-      image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400',
-      category: 'أدوات مطبخ',
-      subCategory: 'أواني طبخ',
-      brand: 'تيفال',
-      inStock: true,
-      rating: 4.6,
-      reviews: 89,
-      isOnSale: true,
-      discountPercentage: 25,
-      images: [
-        'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400'
-      ],
-      specifications: {
-        'العدد': '5 قطع',
-        'المادة': 'ستانلس ستيل',
-        'النوع': 'غير لاصق'
-      }
-    },
-    {
-      id: 8,
-      name: 'خلاط يدوي',
-      description: 'خلاط يدوي قوي للعجائن والصلصات',
-      price: 199,
-      image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400',
-      category: 'أدوات مطبخ',
-      subCategory: 'أجهزة طبخ',
-      brand: 'كينوود',
-      inStock: true,
-      rating: 4.4,
-      reviews: 45,
-      isOnSale: false,
-      images: [
-        'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400'
-      ],
-      specifications: {
-        'القوة': '300 وات',
-        'الملحقات': '3 قطع'
-      }
-    },
-    {
-      id: 9,
-      name: 'طقم سكاكين',
-      description: 'طقم سكاكين احترافية من الفولاذ المقاوم للصدأ',
-      price: 349,
-      image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400',
-      category: 'أدوات مطبخ',
-      subCategory: 'أدوات تقطيع',
-      brand: 'فيكتورينوكس',
-      inStock: true,
-      rating: 4.7,
-      reviews: 67,
-      isOnSale: false,
-      images: [
-        'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400'
-      ],
-      specifications: {
-        'العدد': '6 قطع',
-        'المادة': 'فولاذ مقاوم للصدأ',
-        'الضمان': '5 سنوات'
-      }
-    },
-    {
-      id: 10,
-      name: 'صينية خبز',
-      description: 'صينية خبز من السيليكون المقاوم للحرارة',
-      price: 89,
-      originalPrice: 120,
-      image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400',
-      category: 'أدوات مطبخ',
-      subCategory: 'أدوات خبز',
-      brand: 'سيلكون',
-      inStock: true,
-      rating: 4.2,
-      reviews: 34,
-      isOnSale: true,
-      discountPercentage: 26,
-      images: [
-        'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400'
-      ],
-      specifications: {
-        'الحجم': '30×20 سم',
-        'المادة': 'سيليكون',
-        'مقاوم للحرارة': 'حتى 220°م'
-      }
     }
   ];
 
-  private categories: Category[] = [
+  // Fallback mock categories for development/testing
+  private fallbackCategories: Category[] = [
     {
-      id: 1,
+      _id: '1',
       name: 'منظفات',
       image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400',
       description: 'جميع أنواع المنظفات المنزلية',
-      productCount: 3,
-      subCategories: [
-        { id: 1, name: 'منظفات أرضيات', productCount: 8, products: [] },
-        { id: 2, name: 'منظفات أطباق', productCount: 12, products: [] },
-        { id: 3, name: 'منظفات حمامات', productCount: 6, products: [] },
-        { id: 4, name: 'منظفات عامة', productCount: 10, products: [] }
-      ]
+      isActive: true,
+      parent: null,
+      ancestors: [],
+      subcategories: ['1', '2', '3', '4']
     },
     {
-      id: 2,
+      _id: '2',
       name: 'أدوات منزلية',
       image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400',
       description: 'الأدوات الكهربائية والمنزلية',
-      productCount: 3,
-      subCategories: [
-        { id: 5, name: 'مكنسات', productCount: 15, products: [] },
-        { id: 6, name: 'غسالات', productCount: 9, products: [] },
-        { id: 7, name: 'مكاوي', productCount: 7, products: [] },
-        { id: 8, name: 'خلاطات', productCount: 5, products: [] },
-        { id: 9, name: 'مطاحن', productCount: 4, products: [] }
-      ]
+      isActive: true,
+      parent: null,
+      ancestors: [],
+      subcategories: ['5', '6', '7', '8', '9']
     },
     {
-      id: 3,
+      _id: '3',
       name: 'أدوات مطبخ',
-      image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400',
+      image: 'https://images.unsplash.com/photo-1556909114-fcd25c85cd64?w=400',
       description: 'أدوات الطبخ والطهي الاحترافية',
-      productCount: 4,
-      subCategories: [
-        { id: 10, name: 'أواني طبخ', productCount: 12, products: [] },
-        { id: 11, name: 'أدوات تقطيع', productCount: 8, products: [] },
-        { id: 12, name: 'أجهزة طبخ', productCount: 6, products: [] },
-        { id: 13, name: 'أدوات خبز', productCount: 5, products: [] }
-      ]
+      isActive: true,
+      parent: null,
+      ancestors: [],
+      subcategories: ['10', '11', '12', '13']
     }
   ];
 
   getProducts(): Observable<Product[]> {
-    return of(this.products);
+    // Try to get products from API first, fallback to mock data
+    return this.http.get<any>('/products').pipe(
+      map(response => {
+        if (response.success && response.data) {
+          return response.data;
+        }
+        return this.fallbackProducts;
+      }),
+      catchError(() => {
+        console.log('Using fallback products');
+        return of(this.fallbackProducts);
+      })
+    );
   }
 
   getProductById(id: number): Observable<Product | undefined> {
-    const product = this.products.find(p => p.id === id);
-    return of(product);
+    // Try to get product from API first, fallback to mock data
+    return this.http.get<any>(`/products/${id}`).pipe(
+      map(response => {
+        if (response.success && response.data) {
+          return response.data;
+        }
+        return this.fallbackProducts.find(p => p.id === id);
+      }),
+      catchError(() => {
+        console.log('Using fallback product');
+        return of(this.fallbackProducts.find(p => p.id === id));
+      })
+    );
   }
 
   getProductsByCategory(category: string): Observable<Product[]> {
-    const filteredProducts = this.products.filter(p => p.category === category);
-    return of(filteredProducts);
+    // Try to get products by category from API first, fallback to mock data
+    return this.http.get<any>(`/products/category/${category}`).pipe(
+      map(response => {
+        if (response.success && response.data) {
+          return response.data;
+        }
+        return this.fallbackProducts.filter(p => p.category === category);
+      }),
+      catchError(() => {
+        console.log('Using fallback products by category');
+        return of(this.fallbackProducts.filter(p => p.category === category));
+      })
+    );
+  }
+
+  getProductsBySubcategory(subcategoryId: string): Observable<Product[]> {
+    // Call the subcategory products API endpoint
+    return this.http.get<any>(`/products/subcategory/${subcategoryId}`).pipe(
+      map(response => {
+        if (response.success && response.data) {
+          return response.data;
+        }
+        return [];
+      }),
+      catchError((err) => {
+        console.error('Error loading products for subcategory:', subcategoryId, err);
+        return of([]);
+      })
+    );
   }
 
   getFeaturedProducts(): Observable<Product[]> {
-    const featuredProducts = this.products.filter(p => p.rating >= 4.5);
-    return of(featuredProducts.slice(0, 4));
+    // Try to get featured products from API first, fallback to mock data
+    return this.http.get<any>('/products/featured').pipe(
+      map(response => {
+        if (response.success && response.data) {
+          return response.data;
+        }
+        return this.fallbackProducts.filter(p => p.rating >= 4.5).slice(0, 4);
+      }),
+      catchError(() => {
+        console.log('Using fallback featured products');
+        return of(this.fallbackProducts.filter(p => p.rating >= 4.5).slice(0, 4));
+      })
+    );
   }
 
   getBestSellers(): Observable<Product[]> {
-    const bestSellers = this.products.filter(p => p.reviews >= 100);
-    return of(bestSellers.slice(0, 4));
+    // Try to get best sellers from API first, fallback to mock data
+    return this.http.get<any>('/products/bestsellers').pipe(
+      map(response => {
+        if (response.success && response.data) {
+          return response.data;
+        }
+        return this.fallbackProducts.filter(p => p.reviews >= 100).slice(0, 4);
+      }),
+      catchError(() => {
+        console.log('Using fallback best sellers');
+        return of(this.fallbackProducts.filter(p => p.reviews >= 100).slice(0, 4));
+      })
+    );
   }
 
   getOnSaleProducts(): Observable<Product[]> {
-    const onSaleProducts = this.products.filter(p => p.isOnSale);
-    return of(onSaleProducts.slice(0, 4));
+    // Try to get on-sale products from API first, fallback to mock data
+    return this.http.get<any>('/products/onsale').pipe(
+      map(response => {
+        if (response.success && response.data) {
+          return response.data;
+        }
+        return this.fallbackProducts.filter(p => p.isOnSale).slice(0, 4);
+      }),
+      catchError(() => {
+        console.log('Using fallback on-sale products');
+        return of(this.fallbackProducts.filter(p => p.isOnSale).slice(0, 4));
+      })
+    );
   }
 
   getCategories(): Observable<Category[]> {
-    return of(this.categories);
+    // Try to get categories from API first, fallback to mock data
+    return this.http.get<any>('/categories').pipe(
+      map(response => {
+        if (response.success && response.data) {
+          return response.data;
+        }
+        return this.fallbackCategories;
+      }),
+      catchError(() => {
+        console.log('Using fallback categories');
+        return of(this.fallbackCategories);
+      })
+    );
   }
 
   searchProducts(query: string): Observable<Product[]> {
-    const searchResults = this.products.filter(p => 
-      p.name.toLowerCase().includes(query.toLowerCase()) ||
-      p.description.toLowerCase().includes(query.toLowerCase()) ||
-      p.brand.toLowerCase().includes(query.toLowerCase())
+    // Try to search products from API first, fallback to mock data
+    return this.http.get<any>(`/products/search?q=${encodeURIComponent(query)}`).pipe(
+      map(response => {
+        if (response.success && response.data) {
+          return response.data;
+        }
+        return this.fallbackProducts.filter(p => 
+          p.name.toLowerCase().includes(query.toLowerCase()) ||
+          p.description.toLowerCase().includes(query.toLowerCase()) ||
+          p.brand.toLowerCase().includes(query.toLowerCase())
+        );
+      }),
+      catchError(() => {
+        console.log('Using fallback search');
+        return of(this.fallbackProducts.filter(p => 
+          p.name.toLowerCase().includes(query.toLowerCase()) ||
+          p.description.toLowerCase().includes(query.toLowerCase()) ||
+          p.brand.toLowerCase().includes(query.toLowerCase())
+        ));
+      })
     );
-    return of(searchResults);
   }
 } 
