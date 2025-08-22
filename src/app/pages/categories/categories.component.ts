@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, ViewportScroller } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -29,10 +29,14 @@ export class CategoriesComponent implements OnInit {
 
   constructor(
     private productService: ProductService,
-    private http: HttpClient
+    private http: HttpClient,
+    private viewportScroller: ViewportScroller
   ) {}
 
   ngOnInit(): void {
+    // Scroll to top when component initializes
+    this.viewportScroller.scrollToPosition([0, 0]);
+    
     this.loadCategories();
     // Don't load all products initially
     // this.loadAllProducts();

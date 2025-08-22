@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, ViewportScroller } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { WishlistService } from '../../services/wishlist.service';
 import { CartService } from '../../services/cart.service';
@@ -22,10 +22,14 @@ export class WishlistComponent implements OnInit {
     private wishlistService: WishlistService,
     private cartService: CartService,
     private notificationService: NotificationService,
-    private confirmationService: ConfirmationDialogService
+    private confirmationService: ConfirmationDialogService,
+    private viewportScroller: ViewportScroller
   ) {}
 
   ngOnInit(): void {
+    // Scroll to top when component initializes
+    this.viewportScroller.scrollToPosition([0, 0]);
+    
     this.wishlistService.getWishlistItems().subscribe(items => {
       this.wishlistItems = items;
     });

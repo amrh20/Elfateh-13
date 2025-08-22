@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, ViewportScroller } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ProductCardComponent } from '../../components/product-card/product-card.component';
@@ -67,7 +67,8 @@ export class AllProductsComponent implements OnInit, OnDestroy {
   constructor(
     private productService: ProductService,
     private cartService: CartService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private viewportScroller: ViewportScroller
   ) {
     this.filterForm = this.fb.group({
       subcategory: [''],
@@ -80,6 +81,9 @@ export class AllProductsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Scroll to top when component initializes
+    this.viewportScroller.scrollToPosition([0, 0]);
+    
     this.loadProducts();
     this.setupFilterListeners();
     this.loadCategories();

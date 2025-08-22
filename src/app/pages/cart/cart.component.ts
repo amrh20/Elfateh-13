@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, ViewportScroller } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
 import { CartItem } from '../../models/product.model';
@@ -20,10 +20,14 @@ export class CartComponent implements OnInit {
 
   constructor(
     private cartService: CartService,
-    private router: Router
+    private router: Router,
+    private viewportScroller: ViewportScroller
   ) {}
 
   ngOnInit(): void {
+    // Scroll to top when component initializes
+    this.viewportScroller.scrollToPosition([0, 0]);
+    
     this.cartService.getCartItems().subscribe(items => {
       this.cartItems = items;
       this.calculateTotals();

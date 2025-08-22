@@ -21,9 +21,8 @@
   <!-- Current Order Section -->
   <section *ngIf="currentOrder" class="py-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100">
     <div class="container mx-auto px-4">
-      <div class="bg-white rounded-xl shadow-md p-4 border border-blue-100">
+      <!-- <div class="bg-white rounded-xl shadow-md p-4 border border-blue-100">
         <div class="flex items-center justify-between">
-          <!-- Order Info -->
           <div class="flex items-center space-x-4 space-x-reverse">
             <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
               <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -36,7 +35,6 @@
             </div>
           </div>
   
-          <!-- Status -->
           <div class="flex items-center space-x-4 space-x-reverse">
             <span [class]="'px-3 py-1 rounded-full text-xs font-medium ' + orderService.getOrderStatusColor(currentOrder.status)">
               {{ orderService.getOrderStatusText(currentOrder.status) }}
@@ -47,7 +45,7 @@
             </a>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </section>
   
