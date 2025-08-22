@@ -23,7 +23,6 @@ export class CategoriesComponent implements OnInit {
   selectedSubCategoryId: string | null = null;
   categorySearch: string = '';
   productSearch: string = '';
-  sortBy: string = '';
   loading: boolean = false;
   error: string | null = null;
 
@@ -38,8 +37,8 @@ export class CategoriesComponent implements OnInit {
     this.viewportScroller.scrollToPosition([0, 0]);
     
     this.loadCategories();
-    // Don't load all products initially
-    // this.loadAllProducts();
+    // Load all products for filtering purposes
+    this.loadAllProducts();
   }
 
   loadCategories(): void {
@@ -52,13 +51,13 @@ export class CategoriesComponent implements OnInit {
         if (response.success && response.data) {
           this.categories = response.data;
           console.log('Categories loaded:', this.categories);
-          console.log('First category subcategories:', this.categories[0]?.subcategories);
+          
+          // Load subcategories data for each category
+          this.loadSubcategoriesData();
         } else {
           this.error = 'Failed to load categories';
         }
         this.loading = false;
-        // Auto-select first subcategory after categories load
-        this.autoSelectFirstSubcategory();
       },
       error: (err) => {
         console.error('Error loading categories:', err);
@@ -67,8 +66,74 @@ export class CategoriesComponent implements OnInit {
         
         // Fallback to mock data if API fails
         this.loadMockCategories();
-        // Auto-select first subcategory after mock data loads
-        this.autoSelectFirstSubcategory();
+      }
+    });
+  }
+
+  // Load subcategories data to get names and product counts
+  loadSubcategoriesData(): void {
+    this.categories.forEach(category => {
+      if (category.subcategories && category.subcategories.length > 0) {
+        // For each subcategory ID, try to get its data
+        category.subcategories.forEach((subId: string) => {
+          this.loadSubcategoryData(subId, category._id);
+        });
+      }
+    });
+  }
+
+  // Load individual subcategory data and product count
+  loadSubcategoryData(subId: string, categoryId: string): void {
+    // First, get subcategory details
+    this.http.get<any>(`${environment.apiUrl}/categories/${subId}`).subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          // Update the subcategory in the categories array
+          const category = this.categories.find(c => c._id === categoryId);
+          if (category) {
+            const subIndex = category.subcategories.findIndex((s: any) => 
+              typeof s === 'string' ? s === subId : s._id === subId
+            );
+            if (subIndex !== -1) {
+              // Replace the ID with the full subcategory object
+              category.subcategories[subIndex] = response.data;
+              
+              // Load product count for this subcategory
+              this.loadSubcategoryProductCount(subId, categoryId, subIndex);
+            }
+          }
+        }
+      },
+      error: (err) => {
+        console.log(`Could not load subcategory ${subId} details, using fallback`);
+        // If API fails, we'll use fallback data
+      }
+    });
+  }
+
+  // Load product count for subcategory
+  loadSubcategoryProductCount(subId: string, categoryId: string, subIndex: number): void {
+    this.http.get<any>(`${environment.apiUrl}/products/subcategory/${subId}`).subscribe({
+      next: (response) => {
+        let productCount = 0;
+        
+        if (response.success && response.data) {
+          productCount = response.data.length;
+        } else if (Array.isArray(response)) {
+          productCount = response.length;
+        }
+        
+        // Update the product count in the subcategory
+        const category = this.categories.find(c => c._id === categoryId);
+        if (category && category.subcategories[subIndex]) {
+          // Cast to any first, then add productCount property
+          (category.subcategories[subIndex] as any).productCount = productCount;
+        }
+        
+        console.log(`Subcategory ${subId} has ${productCount} products`);
+      },
+      error: (err) => {
+        console.log(`Could not load product count for subcategory ${subId}`);
       }
     });
   }
@@ -117,9 +182,20 @@ export class CategoriesComponent implements OnInit {
   }
 
   loadAllProducts(): void {
-    this.productService.getProducts().subscribe(products => {
-      this.allProducts = products;
-      this.filteredProducts = products;
+    this.productService.getProducts().subscribe({
+      next: (products) => {
+        this.allProducts = products;
+        console.log('All products loaded:', products.length);
+        
+        // If there's a search query waiting, apply it now
+        if (this.productSearch.trim()) {
+          this.applyProductSearch();
+        }
+      },
+      error: (error) => {
+        console.error('Error loading all products:', error);
+        this.allProducts = [];
+      }
     });
   }
 
@@ -127,15 +203,26 @@ export class CategoriesComponent implements OnInit {
     this.loading = true;
     this.error = null;
     
+    console.log('Loading products for subcategory:', subCategoryId);
+    
     // Call the subcategory products API endpoint
     this.http.get<any>(`${environment.apiUrl}/products/subcategory/${subCategoryId}`).subscribe({
       next: (response) => {
+        console.log('Subcategory products API response:', response);
+        
         if (response.success && response.data) {
           this.filteredProducts = response.data;
           console.log('Products loaded for subcategory:', subCategoryId, response.data);
+          console.log('Products count:', response.data.length);
+        } else if (Array.isArray(response)) {
+          // Handle direct array response
+          this.filteredProducts = response;
+          console.log('Products loaded (direct array):', response);
+          console.log('Products count:', response.length);
         } else {
           this.error = 'Failed to load products for this subcategory';
           this.filteredProducts = [];
+          console.log('No products found for subcategory:', subCategoryId);
         }
         this.loading = false;
       },
@@ -144,9 +231,6 @@ export class CategoriesComponent implements OnInit {
         this.error = 'Error loading products. Please try again.';
         this.filteredProducts = [];
         this.loading = false;
-        
-        // Fallback to filtering from all products
-        this.applyFilters();
       }
     });
   }
@@ -178,10 +262,19 @@ export class CategoriesComponent implements OnInit {
       );
     }
     
-    // Only show categories that have subcategories
-    filtered = filtered.filter(category => 
-      category.subcategories && category.subcategories.length > 0
-    );
+    // Only show categories that have subcategories with data (not just IDs)
+    filtered = filtered.filter(category => {
+      if (!category.subcategories || category.subcategories.length === 0) {
+        return false;
+      }
+      
+      // Check if subcategories have actual data (not just string IDs)
+      const hasDataSubcategories = category.subcategories.some((sub: any) => 
+        typeof sub === 'object' && sub._id && sub.name
+      );
+      
+      return hasDataSubcategories;
+    });
     
     return filtered;
   }
@@ -193,7 +286,7 @@ export class CategoriesComponent implements OnInit {
       this.selectedSubCategoryId = null;
       this.filteredProducts = []; // Don't load all products
     } else {
-      // نفتح الفئة الجديدة
+      // نفتح الصنف الجديدة
       this.selectedCategoryId = categoryId;
       this.selectedSubCategoryId = null;
       this.filteredProducts = []; // Clear products when opening category
@@ -201,22 +294,50 @@ export class CategoriesComponent implements OnInit {
     }
   }
 
-  selectSubCategory(subCategoryId: any): void {
-    // Ensure we have a string ID, not an object
-    const id = typeof subCategoryId === 'object' ? subCategoryId._id || subCategoryId.id : subCategoryId;
-    console.log('SubCategory selected:', { subCategoryId, id, type: typeof subCategoryId });
+  selectSubCategory(subCategory: any): void {
+    // Get the subcategory ID
+    const id = typeof subCategory === 'object' ? subCategory._id : subCategory;
+    console.log('SubCategory selected:', { subCategory, id, type: typeof subCategory });
     
     this.selectedSubCategoryId = id;
     this.loadProductsBySubcategory(id);
   }
 
   onProductSearch(): void {
-    this.loading = false;
-    this.applyFilters();
+    if (!this.selectedSubCategoryId) return;
+    
+    if (!this.productSearch.trim()) {
+      // If search is empty, reload all products for the selected subcategory
+      this.loadProductsBySubcategory(this.selectedSubCategoryId);
+    } else {
+      // Apply search filter to current products
+      this.applyProductSearch();
+    }
   }
 
-  onSort(): void {
-    this.applyFilters();
+  applyProductSearch(): void {
+    if (!this.allProducts || this.allProducts.length === 0) {
+      // If we don't have all products loaded, load them first
+      this.loadAllProducts();
+      return;
+    }
+
+    const query = this.productSearch.toLowerCase().trim();
+    
+    // Filter products by name only
+    this.filteredProducts = this.allProducts.filter(product => 
+      product.name.toLowerCase().includes(query)
+    );
+    
+    console.log(`Search results for "${query}":`, this.filteredProducts.length, 'products found');
+  }
+
+  clearSearch(): void {
+    this.productSearch = '';
+    if (this.selectedSubCategoryId) {
+      // Reload products for the selected subcategory
+      this.loadProductsBySubcategory(this.selectedSubCategoryId);
+    }
   }
 
   clearAllFilters(): void {
@@ -224,7 +345,6 @@ export class CategoriesComponent implements OnInit {
     this.selectedSubCategoryId = null;
     this.categorySearch = '';
     this.productSearch = '';
-    this.sortBy = '';
     this.filteredProducts = []; // Don't load all products
     this.loading = false;
     this.error = null;
@@ -264,29 +384,37 @@ export class CategoriesComponent implements OnInit {
       '11': 'منتجات العناية بالشعر',
       '12': 'منتجات العناية الشخصية'
     };
-    return subCategoryNames[id] || 'فئة فرعية';
+    return subCategoryNames[id] || 'صنف فرعية';
   }
 
   getSubCategoryProductCount(subCategory: any): number {
-    // Handle both string IDs and object references
-    const id = typeof subCategory === 'object' ? subCategory._id || subCategory.id : subCategory;
+    // If the subcategory object has productCount, use it
+    if (typeof subCategory === 'object' && subCategory.productCount !== undefined) {
+      return subCategory.productCount || 0;
+    }
     
-    // Mock product counts - in real app, you'd fetch this from API
-    const subCategoryCounts: { [key: string]: number } = {
-      '1': 8,
-      '2': 12,
-      '3': 6,
-      '4': 4,
-      '5': 10,
-      '6': 15,
-      '7': 9,
-      '8': 7,
-      '9': 5,
-      '10': 8,
-      '11': 6,
-      '12': 10
-    };
-    return subCategoryCounts[id] || 0;
+    // Fallback to 0 if no product count available yet
+    return 0;
+  }
+
+  // Get subcategories that have actual data (not just IDs)
+  getSubcategoriesWithData(category: Category): any[] {
+    if (!category.subcategories) return [];
+    
+    return category.subcategories.filter((sub: any) => 
+      typeof sub === 'object' && sub._id && sub.name
+    );
+  }
+
+  // Get display name for subcategory
+  getSubCategoryDisplayName(subCategory: any): string {
+    if (typeof subCategory === 'object' && subCategory.name) {
+      return subCategory.name;
+    }
+    
+    // Fallback to ID if no name available
+    const id = typeof subCategory === 'string' ? subCategory : subCategory._id || subCategory.id;
+    return this.getSubCategoryName(id);
   }
 
   // Helper method to safely extract subcategory ID
@@ -294,61 +422,7 @@ export class CategoriesComponent implements OnInit {
     return typeof subCategory === 'object' ? subCategory._id || subCategory.id : subCategory;
   }
 
-  applyFilters(): void {
-    let filtered = [...this.allProducts];
 
-    // Category filter
-    if (this.selectedCategoryId) {
-      const category = this.categories.find(c => c._id === this.selectedCategoryId);
-      if (category) {
-        filtered = filtered.filter(product => product.category === category.name);
-      }
-    }
-
-    // Subcategory filter (mock implementation)
-    if (this.selectedSubCategoryId) {
-      // In a real app, you would filter by subcategory
-      // For now, we'll just show a subset of products
-      filtered = filtered.slice(0, Math.floor(filtered.length * 0.7));
-    }
-
-    // Product search filter
-    if (this.productSearch) {
-      const query = this.productSearch.toLowerCase();
-      filtered = filtered.filter(product => 
-        product.name.toLowerCase().includes(query) ||
-        product.description.toLowerCase().includes(query) ||
-(product.brand || '').toLowerCase().includes(query)
-      );
-    }
-
-    // Sort
-    if (this.sortBy) {
-      switch (this.sortBy) {
-        case 'price-low':
-          filtered.sort((a, b) => a.price - b.price);
-          break;
-        case 'price-high':
-          filtered.sort((a, b) => b.price - a.price);
-          break;
-        // case 'rating':
-        //   filtered.sort((a, b) => b.rating - a.rating);
-        //   break;
-        case 'name':
-          filtered.sort((a, b) => a.name.localeCompare(b.name));
-          break;
-        case 'newest':
-          filtered.sort((a, b) => {
-            const aId = typeof a._id === 'number' ? a._id : 0;
-            const bId = typeof b._id === 'number' ? b._id : 0;
-            return bId - aId;
-          });
-          break;
-      }
-    }
-
-    this.filteredProducts = filtered;
-  }
 
   onAddToCart(product: Product): void {
     // Product added to cart via product card component

@@ -58,8 +58,8 @@ export class WishlistComponent implements OnInit {
 
     // تأكيد من المستخدم باستخدام popup جميل
     const confirmed = await this.confirmationService.confirmSuccess(
-      'إضافة جميع المنتجات للسلة',
-      `هل تريد إضافة جميع المنتجات (${this.wishlistItems.length}) إلى السلة وحذفها من المفضلة؟`,
+      'إضافة المنتجات للسلة',
+      `هل تريد إضافة المنتجات (${this.wishlistItems.length}) إلى السلة وحذفها من المفضلة؟`,
       '✅ نعم، أضف الكل',
       '❌ إلغاء'
     );
@@ -98,7 +98,7 @@ export class WishlistComponent implements OnInit {
       if (errorCount === 0) {
         this.notificationService.success(
           'تم بنجاح!', 
-          `تم إضافة جميع المنتجات (${addedCount}) إلى السلة وحذفها من المفضلة`
+          `تم إضافة المنتجات (${addedCount}) إلى السلة وحذفها من المفضلة`
         );
       } else {
         this.notificationService.success(
@@ -109,7 +109,7 @@ export class WishlistComponent implements OnInit {
     } else {
       this.notificationService.error(
         'فشل العملية', 
-        'لم يتم إضافة أي منتج. جميع المنتجات غير متوفرة'
+        'لم يتم إضافة أي منتج. المنتجات غير متوفرة'
       );
     }
   }
@@ -117,7 +117,7 @@ export class WishlistComponent implements OnInit {
   async clearWishlist(): Promise<void> {
     const confirmed = await this.confirmationService.confirmDanger(
       'مسح جميع المنتجات',
-      'هل أنت متأكد من حذف جميع المنتجات من المفضلة؟ لا يمكن التراجع عن هذا الإجراء.',
+      'هل أنت متأكد من حذف المنتجات من المفضلة؟ لا يمكن التراجع عن هذا الإجراء.',
       '🗑️ نعم، احذف الكل',
       '❌ إلغاء'
     );

@@ -54,7 +54,8 @@ export interface ConfirmationDialogData {
         <div class="px-6 pb-6 flex flex-col sm:flex-row-reverse gap-3">
           <button (click)="onConfirm()" 
                   [ngClass]="getConfirmButtonClasses()"
-                  class="w-full sm:w-auto px-6 py-3 rounded-lg font-semibold transition-all duration-200 hover:scale-105 transform shadow-md hover:shadow-lg">
+                  class="w-full sm:w-auto px-6 py-3 rounded-lg font-semibold 
+                  transition-all duration-200 hover:scale-105 transform shadow-md hover:shadow-lg">
             {{ data.confirmText || 'تأكيد' }}
           </button>
           <button (click)="onCancel()" 
