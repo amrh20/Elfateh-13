@@ -42,7 +42,7 @@
     <!-- Wishlist Button - Always Visible -->
     <button (click)="toggleWishlist()" 
             [@wishlistAnimation]="wishlistAnimationState"
-            class="absolute top-4 left-4 p-2.5 bg-white/95 backdrop-blur-sm rounded-full shadow-lg hover:bg-red-50 transition-all duration-300 hover:scale-110 z-10">
+            class="absolute top-4 left-4 p-2.5 bg-white/95 backdrop-blur-sm rounded-full shadow-lg hover:bg-red-50 transition-all duration-300 hover:scale-110 z-10" style="position: absolute !important ;">
       <svg class="w-5 h-5" [class.text-red-600]="isInWishlist" [class.text-gray-500]="!isInWishlist" 
            fill="currentColor" viewBox="0 0 24 24">
         <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
