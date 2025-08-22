@@ -23,6 +23,10 @@ export class CartService {
     return this.cartItems;
   }
 
+  getCartSize(): number {
+    return this.cartItems.reduce((total, item) => total + item.quantity, 0);
+  }
+
   addToCart(product: Product, quantity: number = 1): { success: boolean; message: string } {
     try {
       // Validate input
@@ -116,9 +120,7 @@ export class CartService {
     }, 0);
   }
 
-  getCartSize(): number {
-    return this.cartItems.length;
-  }
+
 
   isCartEmpty(): boolean {
     return this.cartItems.length === 0;

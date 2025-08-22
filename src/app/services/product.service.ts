@@ -3,6 +3,7 @@ import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs/operators';
 import { Product, Category, SubCategory } from '../models/product.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -96,7 +97,7 @@ export class ProductService {
 
   getProducts(): Observable<Product[]> {
     // Try to get products from API first, fallback to mock data
-    return this.http.get<any>('/products').pipe(
+    return this.http.get<any>(`${environment.apiUrl}/products`).pipe(
       map(response => {
         if (response.success && response.data) {
           return response.data;
@@ -112,7 +113,7 @@ export class ProductService {
 
   getProductById(id: number): Observable<Product | undefined> {
     // Try to get product from API first, fallback to mock data
-    return this.http.get<any>(`/products/${id}`).pipe(
+    return this.http.get<any>(`${environment.apiUrl}/products/${id}`).pipe(
       map(response => {
         if (response.success && response.data) {
           return response.data;
@@ -128,7 +129,7 @@ export class ProductService {
 
   getProductsByCategory(category: string): Observable<Product[]> {
     // Try to get products by category from API first, fallback to mock data
-    return this.http.get<any>(`/products/category/${category}`).pipe(
+    return this.http.get<any>(`${environment.apiUrl}/products/category/${category}`).pipe(
       map(response => {
         if (response.success && response.data) {
           return response.data;
@@ -144,7 +145,7 @@ export class ProductService {
 
   getProductsBySubcategory(subcategoryId: string): Observable<Product[]> {
     // Call the subcategory products API endpoint
-    return this.http.get<any>(`/products/subcategory/${subcategoryId}`).pipe(
+    return this.http.get<any>(`${environment.apiUrl}/products/subcategory/${subcategoryId}`).pipe(
       map(response => {
         if (response.success && response.data) {
           return response.data;
@@ -160,7 +161,7 @@ export class ProductService {
 
   getFeaturedProducts(): Observable<Product[]> {
     // Try to get featured products from API first, fallback to mock data
-    return this.http.get<any>('/products/featured').pipe(
+    return this.http.get<any>(`${environment.apiUrl}/products/featured`).pipe(
       map(response => {
         if (response.success && response.data) {
           return response.data;
@@ -176,7 +177,7 @@ export class ProductService {
 
   getBestSellers(): Observable<Product[]> {
     // Try to get best sellers from API first, fallback to mock data
-    return this.http.get<any>('/products/bestsellers').pipe(
+    return this.http.get<any>(`${environment.apiUrl}/products/bestsellers`).pipe(
       map(response => {
         if (response.success && response.data) {
           return response.data;
@@ -192,7 +193,7 @@ export class ProductService {
 
   getOnSaleProducts(): Observable<Product[]> {
     // Try to get on-sale products from API first, fallback to mock data
-    return this.http.get<any>('/products/onsale').pipe(
+    return this.http.get<any>(`${environment.apiUrl}/products/onsale`).pipe(
       map(response => {
         if (response.success && response.data) {
           return response.data;
@@ -208,7 +209,7 @@ export class ProductService {
 
   getCategories(): Observable<Category[]> {
     // Try to get categories from API first, fallback to mock data
-    return this.http.get<any>('/categories').pipe(
+    return this.http.get<any>(`${environment.apiUrl}/categories`).pipe(
       map(response => {
         if (response.success && response.data) {
           return response.data;
@@ -224,7 +225,7 @@ export class ProductService {
 
   searchProducts(query: string): Observable<Product[]> {
     // Try to search products from API first, fallback to mock data
-    return this.http.get<any>(`/products/search?q=${encodeURIComponent(query)}`).pipe(
+    return this.http.get<any>(`${environment.apiUrl}/products/search?q=${encodeURIComponent(query)}`).pipe(
       map(response => {
         if (response.success && response.data) {
           return response.data;
@@ -244,5 +245,30 @@ export class ProductService {
         ));
       })
     );
+  }
+
+  // Helper method to clean image URLs from API response
+  getCleanImageUrl(imageUrl: string): string {
+    if (!imageUrl) return '';
+    
+    // Remove data-src wrapper if exists
+    if (imageUrl.includes('data-src=')) {
+      const match = imageUrl.match(/data-src="([^"]+)"/);
+      if (match && match[1]) {
+        return match[1];
+      }
+    }
+    
+    // Remove extra quotes if exists
+    if (imageUrl.startsWith('"') && imageUrl.endsWith('"')) {
+      return imageUrl.slice(1, -1);
+    }
+    
+    // Remove escaped quotes if exists
+    if (imageUrl.includes('\\"')) {
+      return imageUrl.replace(/\\"/g, '');
+    }
+    
+    return imageUrl;
   }
 } 

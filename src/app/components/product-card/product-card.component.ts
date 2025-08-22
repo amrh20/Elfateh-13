@@ -197,4 +197,29 @@ export class ProductCardComponent {
       }, 400);
     }
   }
+
+  // Helper method to clean image URLs from API response
+  getCleanImageUrl(imageUrl: string): string {
+    if (!imageUrl) return '';
+    
+    // Remove data-src wrapper if exists
+    if (imageUrl.includes('data-src=')) {
+      const match = imageUrl.match(/data-src="([^"]+)"/);
+      if (match && match[1]) {
+        return match[1];
+      }
+    }
+    
+    // Remove extra quotes if exists
+    if (imageUrl.startsWith('"') && imageUrl.endsWith('"')) {
+      return imageUrl.slice(1, -1);
+    }
+    
+    // Remove escaped quotes if exists
+    if (imageUrl.includes('\\"')) {
+      return imageUrl.replace(/\\"/g, '');
+    }
+    
+    return imageUrl;
+  }
 } 

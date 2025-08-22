@@ -1,7 +1,7 @@
 <div class="product-card bg-white rounded-2xl shadow-lg transition-all duration-500 overflow-hidden">
   <!-- Product Image -->
   <div class="relative overflow-hidden bg-gray-100">
-    <img [src]="product.image" [alt]="product.name" 
+    <img [src]="getCleanImageUrl(product.image)" [alt]="product.name" 
          class="w-full h-64 object-cover transition-transform duration-700">
     
     <!-- Sale Badge -->
