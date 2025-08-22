@@ -1,13 +1,7 @@
-// Cart Component Styles
+// Essential Cart Styles
 .cart-container {
-  .cart-header {
-    h1 {
-      @apply text-3xl font-bold text-gray-800 mb-8;
-      background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+  .cart-header h1 {
+    @apply text-3xl font-bold text-gray-800 mb-8;
   }
 
   .cart-items-section {
@@ -63,10 +57,6 @@
             
             &:hover:not(:disabled) {
               @apply scale-105 shadow-md;
-            }
-            
-            &:disabled {
-              @apply cursor-not-allowed;
             }
           }
           
@@ -159,7 +149,7 @@
   }
 }
 
-// Responsive Design
+// Essential Responsive
 @media (max-width: 1024px) {
   .cart-container {
     .cart-items-section,
