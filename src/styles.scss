@@ -532,3 +532,260 @@ body {
               0 0 0 1px rgba(0, 0, 0, 0.1),
               inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
+
+/* You can add global styles to this file, and also import other style files */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+// Force Light Theme - Override System Dark Mode
+html {
+  color-scheme: light !important;
+  background-color: #ffffff !important;
+}
+
+body {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  color-scheme: light !important;
+}
+
+// Force all elements to use light theme
+* {
+  color-scheme: light !important;
+}
+
+// Override any dark mode styles
+[data-theme="dark"],
+[data-mode="dark"],
+.dark,
+.dark-mode {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  color-scheme: light !important;
+}
+
+// Force specific background colors
+.bg-white,
+.bg-gray-50,
+.bg-gray-100,
+.bg-gray-200 {
+  background-color: inherit !important;
+}
+
+// Force text colors
+.text-white,
+.text-black,
+.text-gray-800,
+.text-gray-900 {
+  color: inherit !important;
+}
+
+// Override system color scheme
+@media (prefers-color-scheme: dark) {
+  html,
+  body,
+  * {
+    color-scheme: light !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+}
+
+// Force light theme on mobile devices
+@media (max-width: 768px) {
+  html,
+  body,
+  * {
+    color-scheme: light !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+  
+  // Override any mobile-specific dark mode
+  [data-theme="dark"],
+  [data-mode="dark"],
+  .dark,
+  .dark-mode {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+  
+  // Force light theme for mobile components
+  .mobile-dark,
+  .mobile-dark-mode {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+}
+
+// Force light theme for all components
+app-root,
+app-header,
+app-footer,
+app-home,
+app-categories,
+app-all-products,
+app-cart,
+app-wishlist,
+app-product-details {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  color-scheme: light !important;
+}
+
+// Override any Tailwind dark mode utilities
+.dark\:bg-gray-900,
+.dark\:text-white,
+.dark\:border-gray-700 {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-color: #e5e7eb !important;
+}
+
+// Force light theme for specific sections
+.bg-gray-50 {
+  background-color: #f9fafb !important;
+}
+
+.bg-white {
+  background-color: #ffffff !important;
+}
+
+// Ensure proper contrast
+.text-gray-800 {
+  color: #1f2937 !important;
+}
+
+.text-gray-600 {
+  color: #4b5563 !important;
+}
+
+.text-gray-700 {
+  color: #374151 !important;
+}
+
+// Force light theme for cards and containers
+.card,
+.container,
+.section {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+// Override any CSS custom properties that might be set by dark mode
+:root {
+  --background-color: #ffffff !important;
+  --text-color: #000000 !important;
+  --primary-color: #dc2626 !important;
+  --secondary-color: #f3f4f6 !important;
+  --border-color: #e5e7eb !important;
+  
+  // Force light theme colors
+  --tw-bg-opacity: 1 !important;
+  --tw-text-opacity: 1 !important;
+  --tw-border-opacity: 1 !important;
+  
+  // Override any dark mode CSS variables
+  --color-background: #ffffff !important;
+  --color-text: #000000 !important;
+  --color-primary: #dc2626 !important;
+  --color-secondary: #f3f4f6 !important;
+  --color-border: #e5e7eb !important;
+}
+
+// Force light theme for all pseudo-elements
+*::before,
+*::after {
+  color-scheme: light !important;
+}
+
+// Override any JavaScript dark mode detection
+[data-theme],
+[data-mode],
+[class*="dark"] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  color-scheme: light !important;
+}
+
+// Force light theme for specific elements that might inherit dark colors
+input,
+select,
+textarea,
+button,
+a {
+  background-color: inherit !important;
+  color: inherit !important;
+  color-scheme: light !important;
+}
+
+// Ensure proper styling for form elements
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+select,
+textarea {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-color: #e5e7eb !important;
+}
+
+// Force light theme for modals and overlays
+.modal,
+.overlay,
+.popup,
+.dialog {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+// Override any CSS-in-JS dark mode styles
+[style*="background-color: rgb(17, 24, 39)"],
+[style*="background-color: #111827"],
+[style*="color: rgb(255, 255, 255)"],
+[style*="color: #ffffff"] {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+// CSS-only approach to force light theme
+html[data-theme="dark"],
+html[data-mode="dark"],
+html.dark,
+html.dark-mode {
+  color-scheme: light !important;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+// CSS-only approach to force light theme
+html[data-theme="dark"],
+html[data-mode="dark"],
+html.dark,
+html.dark-mode {
+  color-scheme: light !important;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+// Force light theme for all possible dark mode selectors
+html[data-theme="dark"] *,
+html[data-mode="dark"] *,
+html.dark *,
+html.dark-mode * {
+  color-scheme: light !important;
+  background-color: inherit !important;
+  color: inherit !important;
+}
+
+// Override any CSS that might be loaded dynamically
+[data-theme="dark"] *,
+[data-mode="dark"] *,
+.dark *,
+.dark-mode * {
+  color-scheme: light !important;
+  background-color: inherit !important;
+  color: inherit !important;
+}

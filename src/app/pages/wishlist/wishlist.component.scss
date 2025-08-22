@@ -1,13 +1,7 @@
-// Wishlist Component Styles
+// Essential Wishlist Styles
 .wishlist-container {
-  .wishlist-header {
-    h1 {
-      @apply text-3xl font-bold text-gray-800 mb-8;
-      background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+  .wishlist-header h1 {
+    @apply text-3xl font-bold text-gray-800 mb-8;
   }
 
   .wishlist-info-card {
@@ -110,46 +104,30 @@
   }
 }
 
-// Animations
+// Essential Animation
 @keyframes heartBeat {
-  0% {
-    transform: scale(1);
-  }
-  14% {
-    transform: scale(1.1);
-  }
-  28% {
-    transform: scale(1);
-  }
-  42% {
-    transform: scale(1.1);
-  }
-  70% {
-    transform: scale(1);
-  }
+  0% { transform: scale(1); }
+  14% { transform: scale(1.1); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.1); }
+  70% { transform: scale(1); }
 }
 
-// Responsive Design
+// Essential Responsive
 @media (max-width: 1024px) {
-  .wishlist-container {
-    .products-grid {
-      @apply lg:grid-cols-2;
-    }
+  .wishlist-container .products-grid {
+    @apply lg:grid-cols-2;
   }
 }
 
 @media (max-width: 768px) {
   .wishlist-container {
-    .wishlist-info-card {
-      .info-content {
-        @apply flex-col space-y-4 text-center;
-      }
+    .wishlist-info-card .info-content {
+      @apply flex-col space-y-4 text-center;
     }
     
-    .quick-actions {
-      .actions-container {
-        @apply flex-col;
-      }
+    .quick-actions .actions-container {
+      @apply flex-col;
     }
     
     .products-grid {
@@ -160,23 +138,19 @@
 
 @media (max-width: 640px) {
   .wishlist-container {
-    .wishlist-header {
-      h1 {
-        @apply text-2xl;
-      }
+    .wishlist-header h1 {
+      @apply text-2xl;
     }
     
-    .empty-wishlist {
-      .empty-card {
-        @apply p-8;
-        
-        .wishlist-empty-icon svg {
-          @apply w-20 h-20;
-        }
-        
-        h2 {
-          @apply text-xl;
-        }
+    .empty-wishlist .empty-card {
+      @apply p-8;
+      
+      .wishlist-empty-icon svg {
+        @apply w-20 h-20;
+      }
+      
+      h2 {
+        @apply text-xl;
       }
     }
   }
