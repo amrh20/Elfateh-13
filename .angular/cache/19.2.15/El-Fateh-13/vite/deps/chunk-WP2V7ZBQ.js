@@ -1,14 +1,16 @@
 import {
   CommonModule,
-  DOCUMENT,
   DomAdapter,
+  getDOM,
+  setRootDomAdapter
+} from "./chunk-VCP6PZHG.js";
+import {
+  DOCUMENT,
   PLATFORM_BROWSER_ID,
   XhrFactory,
-  getDOM,
   isPlatformServer,
-  parseCookieValue,
-  setRootDomAdapter
-} from "./chunk-GJR3TWIK.js";
+  parseCookieValue
+} from "./chunk-DEWRB63J.js";
 import {
   APP_ID,
   ApplicationModule,
@@ -43,7 +45,7 @@ import {
   ɵɵdefineInjector,
   ɵɵdefineNgModule,
   ɵɵinject
-} from "./chunk-2HYYAJL4.js";
+} from "./chunk-RFZ2BTTM.js";
 import {
   __spreadProps,
   __spreadValues
@@ -1228,4 +1230,4 @@ export {
    * License: MIT
    *)
 */
-//# sourceMappingURL=chunk-J7NLI2PG.js.map
+//# sourceMappingURL=chunk-WP2V7ZBQ.js.map

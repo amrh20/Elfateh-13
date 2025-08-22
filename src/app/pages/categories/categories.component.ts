@@ -1,320 +1,343 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, ViewportScroller } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { ProductService } from '../../services/product.service';
 import { Product, Category, SubCategory } from '../../models/product.model';
 import { ProductCardComponent } from '../../components/product-card/product-card.component';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, ProductCardComponent],
-  template: `
-    <div class="bg-gray-50 min-h-screen">
-      <div class="container mx-auto px-4 py-8">
-        <!-- Header -->
-        <div class="text-center mb-12">
-          <h1 class="text-4xl font-bold text-gray-800 mb-4">الأصناف والمنتجات</h1>
-          <p class="text-gray-600 max-w-2xl mx-auto">
-            تصفح مجموعتنا الواسعة من المنظفات والأدوات المنزلية عالية الجودة
-          </p>
-        </div>
-
-        <div class="flex flex-col lg:flex-row gap-8">
-          <!-- Sidebar Categories Menu -->
-          <div class="lg:w-80 flex-shrink-0">
-            <div class="bg-white rounded-2xl shadow-lg p-6 sticky top-8">
-              <h2 class="text-xl font-bold text-gray-800 mb-6 border-b border-gray-200 pb-4">
-                الأصناف
-              </h2>
-              
-              <!-- Search in Categories -->
-              <div class="mb-6">
-                <input type="text" 
-                       [(ngModel)]="categorySearch"
-                       placeholder="البحث في الأصناف..."
-                       class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-300">
-              </div>
-
-              <!-- Categories List -->
-              <div class="space-y-2">
-                <div *ngFor="let category of filteredCategories" 
-                     class="category-item">
-                  
-                  <!-- Main Category -->
-                  <button (click)="toggleCategory(category.id)"
-                          [class.active]="selectedCategoryId === category.id"
-                          class="w-full flex items-center justify-between p-4 rounded-xl hover:bg-gray-50 transition-all duration-300 group">
-                    <div class="flex items-center space-x-3 space-x-reverse">
-                      <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center group-hover:bg-red-200 transition-colors duration-300">
-                        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
-                          </path>
-                        </svg>
-                      </div>
-                      <div class="text-right">
-                        <h3 class="font-semibold text-gray-800 group-hover:text-red-600 transition-colors duration-300">
-                          {{ category.name }}
-                        </h3>
-                        <p class="text-sm text-gray-500">{{ category.productCount }} منتج</p>
-                      </div>
-                    </div>
-                    <svg class="w-5 h-5 text-gray-400 transition-transform duration-300"
-                         [class.rotate-180]="selectedCategoryId === category.id"
-                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                  </button>
-
-                  <!-- Subcategories Dropdown -->
-                  <div *ngIf="selectedCategoryId === category.id" 
-                       class="mt-2 space-y-1 pr-4 animate-fade-in-down">
-                    <div *ngFor="let subCategory of category.subCategories" 
-                         (click)="selectSubCategory(subCategory)"
-                         [class.active]="selectedSubCategoryId === subCategory.id"
-                         class="flex items-center justify-between p-3 rounded-lg hover:bg-red-50 cursor-pointer transition-all duration-300 group">
-                      <div class="flex items-center space-x-3 space-x-reverse">
-                        <div class="w-2 h-2 bg-red-400 rounded-full group-hover:bg-red-600 transition-colors duration-300"></div>
-                        <span class="text-sm font-medium text-gray-700 group-hover:text-red-600 transition-colors duration-300">
-                          {{ subCategory.name }}
-                        </span>
-                      </div>
-                      <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                        {{ subCategory.productCount }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Clear Filters Button -->
-              <div class="mt-6 pt-6 border-t border-gray-200">
-                <button (click)="clearAllFilters()"
-                        class="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-xl hover:bg-gray-200 transition-all duration-300 font-medium">
-                  مسح الفلاتر
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Main Content Area -->
-          <div class="flex-1">
-            <!-- Current Selection Header -->
-            <div *ngIf="selectedCategoryId || selectedSubCategoryId" 
-                 class="bg-white rounded-2xl shadow-lg p-6 mb-8">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h2 class="text-2xl font-bold text-gray-800 mb-2">
-                    {{ getCurrentSelectionName() }}
-                  </h2>
-                  <p class="text-gray-600">
-                    {{ getCurrentSelectionCount() }} منتج متاح
-                  </p>
-                </div>
-                <div class="flex items-center space-x-4 space-x-reverse">
-                  <button (click)="clearAllFilters()"
-                          class="text-red-600 hover:text-red-700 transition-colors font-medium">
-                    عرض الكل
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Products Filters -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
-              <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
-                <div class="flex items-center space-x-4 space-x-reverse">
-                  <span class="text-gray-700 font-semibold">تصفية المنتجات:</span>
-                </div>
-                
-                <div class="flex items-center space-x-4 space-x-reverse">
-                  <input type="text" 
-                         [(ngModel)]="productSearch"
-                         (input)="onProductSearch()"
-                         placeholder="البحث في المنتجات..."
-                         class="px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-300">
-                  
-                  <select [(ngModel)]="sortBy" (change)="onSort()" 
-                          class="px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-300">
-                    <option value="">ترتيب حسب</option>
-                    <option value="price-low">السعر: من الأقل للأعلى</option>
-                    <option value="price-high">السعر: من الأعلى للأقل</option>
-                    <option value="rating">التقييم</option>
-                    <option value="name">الاسم</option>
-                    <option value="newest">الأحدث</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-                         <!-- Products Grid -->
-             <div *ngIf="filteredProducts.length > 0">
-               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-8 lg:gap-12">
-                 <app-product-card *ngFor="let product of filteredProducts" 
-                                  [product]="product"
-                                  (addToCartEvent)="onAddToCart($event)">
-                 </app-product-card>
-               </div>
-             </div>
-
-            <!-- No Products Found -->
-            <div *ngIf="filteredProducts.length === 0" 
-                 class="text-center py-16 bg-white rounded-2xl shadow-lg">
-              <svg class="w-20 h-20 text-gray-300 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z">
-                </path>
-              </svg>
-              <h3 class="text-2xl font-semibold text-gray-600 mb-3">لا توجد منتجات</h3>
-              <p class="text-gray-500 mb-6">جرب تغيير الفلاتر أو البحث بكلمات مختلفة</p>
-              <button (click)="clearAllFilters()"
-                      class="bg-red-600 text-white px-6 py-3 rounded-xl hover:bg-red-700 transition-all duration-300 font-medium">
-                عرض جميع المنتجات
-              </button>
-            </div>
-
-                         <!-- All Products (when no category selected) -->
-             <div *ngIf="!selectedCategoryId && !selectedSubCategoryId && !productSearch">
-               <div class="bg-white rounded-2xl shadow-lg p-6 mb-8">
-                 <h2 class="text-2xl font-bold text-gray-800 mb-4">جميع المنتجات</h2>
-                 <p class="text-gray-600">تصفح جميع منتجاتنا المميزة</p>
-               </div>
-               
-               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-8 lg:gap-12">
-                 <app-product-card *ngFor="let product of allProducts" 
-                                  [product]="product"
-                                  (addToCartEvent)="onAddToCart($event)">
-                 </app-product-card>
-               </div>
-             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .category-item .active {
-      background-color: #fef2f2;
-      border: 2px solid #dc2626;
-    }
-    
-    .category-item .active h3 {
-      color: #dc2626;
-    }
-    
-    .subcategory-item .active {
-      background-color: #fef2f2;
-      border: 1px solid #dc2626;
-    }
-  `]
+  imports: [CommonModule, RouterModule, FormsModule, HttpClientModule, ProductCardComponent],
+  templateUrl: './categories.component.html',
+  styleUrls: ['./categories.component.scss']
 })
 export class CategoriesComponent implements OnInit {
   categories: Category[] = [];
   allProducts: Product[] = [];
   filteredProducts: Product[] = [];
-  selectedCategoryId: number | null = null;
-  selectedSubCategoryId: number | null = null;
+  selectedCategoryId: string | null = null;
+  selectedSubCategoryId: string | null = null;
   categorySearch: string = '';
   productSearch: string = '';
-  sortBy: string = '';
+  loading: boolean = false;
+  error: string | null = null;
 
-  constructor(private productService: ProductService) {}
+  constructor(
+    private productService: ProductService,
+    private http: HttpClient,
+    private viewportScroller: ViewportScroller
+  ) {}
 
   ngOnInit(): void {
+    // Scroll to top when component initializes
+    this.viewportScroller.scrollToPosition([0, 0]);
+    
     this.loadCategories();
+    // Load all products for filtering purposes
     this.loadAllProducts();
   }
 
   loadCategories(): void {
-    this.productService.getCategories().subscribe(categories => {
-      // Add subcategories to each category
-      this.categories = categories.map(category => ({
-        ...category,
-        subCategories: this.generateSubCategories(category)
-      }));
+    this.loading = true;
+    this.error = null;
+    
+    // Call the categories API endpoint
+    this.http.get<any>(`${environment.apiUrl}/categories`).subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          this.categories = response.data;
+          console.log('Categories loaded:', this.categories);
+          
+          // Load subcategories data for each category
+          this.loadSubcategoriesData();
+        } else {
+          this.error = 'Failed to load categories';
+        }
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error loading categories:', err);
+        this.error = 'Error loading categories. Please try again.';
+        this.loading = false;
+        
+        // Fallback to mock data if API fails
+        this.loadMockCategories();
+      }
     });
   }
 
-  generateSubCategories(category: Category): SubCategory[] {
-    // Generate mock subcategories based on the main category
-    const subCategories: SubCategory[] = [];
-    
-    switch (category.name) {
-      case 'منظفات':
-        subCategories.push(
-          { id: 1, name: 'منظفات الأرضيات', productCount: 8, products: [] },
-          { id: 2, name: 'منظفات المطبخ', productCount: 12, products: [] },
-          { id: 3, name: 'منظفات الحمام', productCount: 6, products: [] },
-          { id: 4, name: 'منظفات الزجاج', productCount: 4, products: [] },
-          { id: 5, name: 'منظفات الملابس', productCount: 10, products: [] }
-        );
-        break;
-      case 'أدوات منزلية':
-        subCategories.push(
-          { id: 6, name: 'أدوات المطبخ', productCount: 15, products: [] },
-          { id: 7, name: 'أدوات التنظيف', productCount: 9, products: [] },
-          { id: 8, name: 'أدوات الحمام', productCount: 7, products: [] },
-          { id: 9, name: 'أدوات الغسيل', productCount: 5, products: [] }
-        );
-        break;
-      case 'منتجات العناية':
-        subCategories.push(
-          { id: 10, name: 'منتجات العناية بالبشرة', productCount: 8, products: [] },
-          { id: 11, name: 'منتجات العناية بالشعر', productCount: 6, products: [] },
-          { id: 12, name: 'منتجات العناية الشخصية', productCount: 10, products: [] }
-        );
-        break;
-      default:
-        subCategories.push(
-          { id: 13, name: 'منتجات عامة', productCount: 5, products: [] }
-        );
-    }
-    
-    return subCategories;
+  // Load subcategories data to get names and product counts
+  loadSubcategoriesData(): void {
+    this.categories.forEach(category => {
+      if (category.subcategories && category.subcategories.length > 0) {
+        // For each subcategory ID, try to get its data
+        category.subcategories.forEach((subId: string) => {
+          this.loadSubcategoryData(subId, category._id);
+        });
+      }
+    });
+  }
+
+  // Load individual subcategory data and product count
+  loadSubcategoryData(subId: string, categoryId: string): void {
+    // First, get subcategory details
+    this.http.get<any>(`${environment.apiUrl}/categories/${subId}`).subscribe({
+      next: (response) => {
+        if (response.success && response.data) {
+          // Update the subcategory in the categories array
+          const category = this.categories.find(c => c._id === categoryId);
+          if (category) {
+            const subIndex = category.subcategories.findIndex((s: any) => 
+              typeof s === 'string' ? s === subId : s._id === subId
+            );
+            if (subIndex !== -1) {
+              // Replace the ID with the full subcategory object
+              category.subcategories[subIndex] = response.data;
+              
+              // Load product count for this subcategory
+              this.loadSubcategoryProductCount(subId, categoryId, subIndex);
+            }
+          }
+        }
+      },
+      error: (err) => {
+        console.log(`Could not load subcategory ${subId} details, using fallback`);
+        // If API fails, we'll use fallback data
+      }
+    });
+  }
+
+  // Load product count for subcategory
+  loadSubcategoryProductCount(subId: string, categoryId: string, subIndex: number): void {
+    this.http.get<any>(`${environment.apiUrl}/products/subcategory/${subId}`).subscribe({
+      next: (response) => {
+        let productCount = 0;
+        
+        if (response.success && response.data) {
+          productCount = response.data.length;
+        } else if (Array.isArray(response)) {
+          productCount = response.length;
+        }
+        
+        // Update the product count in the subcategory
+        const category = this.categories.find(c => c._id === categoryId);
+        if (category && category.subcategories[subIndex]) {
+          // Cast to any first, then add productCount property
+          (category.subcategories[subIndex] as any).productCount = productCount;
+        }
+        
+        console.log(`Subcategory ${subId} has ${productCount} products`);
+      },
+      error: (err) => {
+        console.log(`Could not load product count for subcategory ${subId}`);
+      }
+    });
+  }
+
+  loadMockCategories(): void {
+    // Fallback mock data structure matching the API response
+    this.categories = [
+      {
+        _id: '1',
+        name: 'منظفات',
+        description: 'منتجات تنظيف عالية الجودة',
+        image: 'assets/images/cleaners.jpg',
+        isActive: true,
+        parent: null,
+        ancestors: [],
+        subcategories: ['1', '2', '3', '4', '5']
+      },
+      {
+        _id: '2',
+        name: 'أدوات منزلية',
+        description: 'أدوات منزلية متنوعة',
+        image: 'assets/images/home-tools.jpg',
+        isActive: true,
+        parent: null,
+        ancestors: [],
+        subcategories: ['6', '7', '8', '9']
+      },
+      {
+        _id: '3',
+        name: 'منتجات العناية',
+        description: 'منتجات العناية الشخصية',
+        image: 'assets/images/care-products.jpg',
+        isActive: true,
+        parent: null,
+        ancestors: [],
+        subcategories: ['10', '11', '12']
+      }
+    ];
+  }
+
+  autoSelectFirstSubcategory(): void {
+    // Don't auto-select anything - let user choose manually
+    this.selectedCategoryId = null;
+    this.selectedSubCategoryId = null;
+    console.log('No auto-selection - waiting for user input');
   }
 
   loadAllProducts(): void {
-    this.productService.getProducts().subscribe(products => {
-      this.allProducts = products;
-      this.filteredProducts = products;
+    this.productService.getProducts().subscribe({
+      next: (products) => {
+        this.allProducts = products;
+        console.log('All products loaded:', products.length);
+        
+        // If there's a search query waiting, apply it now
+        if (this.productSearch.trim()) {
+          this.applyProductSearch();
+        }
+      },
+      error: (error) => {
+        console.error('Error loading all products:', error);
+        this.allProducts = [];
+      }
     });
   }
 
-  get filteredCategories(): Category[] {
-    if (!this.categorySearch) return this.categories;
+  loadProductsBySubcategory(subCategoryId: string): void {
+    this.loading = true;
+    this.error = null;
     
-    return this.categories.filter(category =>
-      category.name.toLowerCase().includes(this.categorySearch.toLowerCase()) ||
-      category.subCategories?.some(sub => 
-        sub.name.toLowerCase().includes(this.categorySearch.toLowerCase())
-      ) || false
-    );
+    console.log('Loading products for subcategory:', subCategoryId);
+    
+    // Call the subcategory products API endpoint
+    this.http.get<any>(`${environment.apiUrl}/products/subcategory/${subCategoryId}`).subscribe({
+      next: (response) => {
+        console.log('Subcategory products API response:', response);
+        
+        if (response.success && response.data) {
+          this.filteredProducts = response.data;
+          console.log('Products loaded for subcategory:', subCategoryId, response.data);
+          console.log('Products count:', response.data.length);
+        } else if (Array.isArray(response)) {
+          // Handle direct array response
+          this.filteredProducts = response;
+          console.log('Products loaded (direct array):', response);
+          console.log('Products count:', response.length);
+        } else {
+          this.error = 'Failed to load products for this subcategory';
+          this.filteredProducts = [];
+          console.log('No products found for subcategory:', subCategoryId);
+        }
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error loading products for subcategory:', subCategoryId, err);
+        this.error = 'Error loading products. Please try again.';
+        this.filteredProducts = [];
+        this.loading = false;
+      }
+    });
   }
 
-  toggleCategory(categoryId: number): void {
+  loadProductsByCategory(categoryId: string): void {
+    this.loading = true;
+    this.error = null;
+    
+    // For main category, we'll filter from all products or call a category API if available
+    const category = this.categories.find(c => c._id === categoryId);
+    if (category) {
+      // Filter products by category name from all products
+      this.filteredProducts = this.allProducts.filter(product => 
+        product.category === category.name
+      );
+      console.log('Products filtered for category:', category.name, this.filteredProducts);
+    }
+    this.loading = false;
+  }
+
+  get filteredCategories(): Category[] {
+    let filtered = this.categories;
+    
+    // Filter by search term if provided
+    if (this.categorySearch) {
+      filtered = filtered.filter(category =>
+        category.name.toLowerCase().includes(this.categorySearch.toLowerCase()) ||
+        category.description.toLowerCase().includes(this.categorySearch.toLowerCase())
+      );
+    }
+    
+    // Only show categories that have subcategories with data (not just IDs)
+    filtered = filtered.filter(category => {
+      if (!category.subcategories || category.subcategories.length === 0) {
+        return false;
+      }
+      
+      // Check if subcategories have actual data (not just string IDs)
+      const hasDataSubcategories = category.subcategories.some((sub: any) => 
+        typeof sub === 'object' && sub._id && sub.name
+      );
+      
+      return hasDataSubcategories;
+    });
+    
+    return filtered;
+  }
+
+  toggleCategory(categoryId: string): void {
     if (this.selectedCategoryId === categoryId) {
+      // إذا كانت مفتوحة، نغلقها
       this.selectedCategoryId = null;
       this.selectedSubCategoryId = null;
+      this.filteredProducts = []; // Don't load all products
     } else {
+      // نفتح الصنف الجديدة
       this.selectedCategoryId = categoryId;
       this.selectedSubCategoryId = null;
+      this.filteredProducts = []; // Clear products when opening category
+      // لا نحمل منتجات هنا، فقط نفتح Subcategories
     }
-    this.applyFilters();
   }
 
-  selectSubCategory(subCategory: SubCategory): void {
-    this.selectedSubCategoryId = subCategory.id;
-    this.applyFilters();
+  selectSubCategory(subCategory: any): void {
+    // Get the subcategory ID
+    const id = typeof subCategory === 'object' ? subCategory._id : subCategory;
+    console.log('SubCategory selected:', { subCategory, id, type: typeof subCategory });
+    
+    this.selectedSubCategoryId = id;
+    this.loadProductsBySubcategory(id);
   }
 
   onProductSearch(): void {
-    this.applyFilters();
+    if (!this.selectedSubCategoryId) return;
+    
+    if (!this.productSearch.trim()) {
+      // If search is empty, reload all products for the selected subcategory
+      this.loadProductsBySubcategory(this.selectedSubCategoryId);
+    } else {
+      // Apply search filter to current products
+      this.applyProductSearch();
+    }
   }
 
-  onSort(): void {
-    this.applyFilters();
+  applyProductSearch(): void {
+    if (!this.allProducts || this.allProducts.length === 0) {
+      // If we don't have all products loaded, load them first
+      this.loadAllProducts();
+      return;
+    }
+
+    const query = this.productSearch.toLowerCase().trim();
+    
+    // Filter products by name only
+    this.filteredProducts = this.allProducts.filter(product => 
+      product.name.toLowerCase().includes(query)
+    );
+    
+    console.log(`Search results for "${query}":`, this.filteredProducts.length, 'products found');
+  }
+
+  clearSearch(): void {
+    this.productSearch = '';
+    if (this.selectedSubCategoryId) {
+      // Reload products for the selected subcategory
+      this.loadProductsBySubcategory(this.selectedSubCategoryId);
+    }
   }
 
   clearAllFilters(): void {
@@ -322,18 +345,17 @@ export class CategoriesComponent implements OnInit {
     this.selectedSubCategoryId = null;
     this.categorySearch = '';
     this.productSearch = '';
-    this.sortBy = '';
-    this.filteredProducts = [...this.allProducts];
+    this.filteredProducts = []; // Don't load all products
+    this.loading = false;
+    this.error = null;
   }
 
   getCurrentSelectionName(): string {
     if (this.selectedSubCategoryId) {
-      const category = this.categories.find(c => c.subCategories?.some(s => s.id === this.selectedSubCategoryId));
-      const subCategory = category?.subCategories?.find(s => s.id === this.selectedSubCategoryId);
-      return subCategory?.name || '';
+      return this.getSubCategoryName(this.selectedSubCategoryId);
     }
     if (this.selectedCategoryId) {
-      const category = this.categories.find(c => c.id === this.selectedCategoryId);
+      const category = this.categories.find(c => c._id === this.selectedCategoryId);
       return category?.name || '';
     }
     return '';
@@ -343,59 +365,92 @@ export class CategoriesComponent implements OnInit {
     return this.filteredProducts.length;
   }
 
-  applyFilters(): void {
-    let filtered = [...this.allProducts];
-
-    // Category filter
-    if (this.selectedCategoryId) {
-      const category = this.categories.find(c => c.id === this.selectedCategoryId);
-      if (category) {
-        filtered = filtered.filter(product => product.category === category.name);
-      }
-    }
-
-    // Subcategory filter (mock implementation)
-    if (this.selectedSubCategoryId) {
-      // In a real app, you would filter by subcategory
-      // For now, we'll just show a subset of products
-      filtered = filtered.slice(0, Math.floor(filtered.length * 0.7));
-    }
-
-    // Product search filter
-    if (this.productSearch) {
-      const query = this.productSearch.toLowerCase();
-      filtered = filtered.filter(product => 
-        product.name.toLowerCase().includes(query) ||
-        product.description.toLowerCase().includes(query) ||
-        product.brand.toLowerCase().includes(query)
-      );
-    }
-
-    // Sort
-    if (this.sortBy) {
-      switch (this.sortBy) {
-        case 'price-low':
-          filtered.sort((a, b) => a.price - b.price);
-          break;
-        case 'price-high':
-          filtered.sort((a, b) => b.price - a.price);
-          break;
-        case 'rating':
-          filtered.sort((a, b) => b.rating - a.rating);
-          break;
-        case 'name':
-          filtered.sort((a, b) => a.name.localeCompare(b.name));
-          break;
-        case 'newest':
-          filtered.sort((a, b) => b.id - a.id);
-          break;
-      }
-    }
-
-    this.filteredProducts = filtered;
+  getSubCategoryName(subCategory: any): string {
+    // Handle both string IDs and object references
+    const id = typeof subCategory === 'object' ? subCategory._id || subCategory.id : subCategory;
+    
+    // Mock subcategory names - in real app, you'd fetch this from API
+    const subCategoryNames: { [key: string]: string } = {
+      '1': 'منظفات الأرضيات',
+      '2': 'منظفات المطبخ',
+      '3': 'منظفات الحمام',
+      '4': 'منظفات الزجاج',
+      '5': 'منظفات الملابس',
+      '6': 'أدوات المطبخ',
+      '7': 'أدوات التنظيف',
+      '8': 'أدوات الحمام',
+      '9': 'أدوات الغسيل',
+      '10': 'منتجات العناية بالبشرة',
+      '11': 'منتجات العناية بالشعر',
+      '12': 'منتجات العناية الشخصية'
+    };
+    return subCategoryNames[id] || 'صنف فرعية';
   }
+
+  getSubCategoryProductCount(subCategory: any): number {
+    // If the subcategory object has productCount, use it
+    if (typeof subCategory === 'object' && subCategory.productCount !== undefined) {
+      return subCategory.productCount || 0;
+    }
+    
+    // Fallback to 0 if no product count available yet
+    return 0;
+  }
+
+  // Get subcategories that have actual data (not just IDs)
+  getSubcategoriesWithData(category: Category): any[] {
+    if (!category.subcategories) return [];
+    
+    return category.subcategories.filter((sub: any) => 
+      typeof sub === 'object' && sub._id && sub.name
+    );
+  }
+
+  // Get display name for subcategory
+  getSubCategoryDisplayName(subCategory: any): string {
+    if (typeof subCategory === 'object' && subCategory.name) {
+      return subCategory.name;
+    }
+    
+    // Fallback to ID if no name available
+    const id = typeof subCategory === 'string' ? subCategory : subCategory._id || subCategory.id;
+    return this.getSubCategoryName(id);
+  }
+
+  // Helper method to safely extract subcategory ID
+  getSubCategoryId(subCategory: any): string {
+    return typeof subCategory === 'object' ? subCategory._id || subCategory.id : subCategory;
+  }
+
+
 
   onAddToCart(product: Product): void {
     // Product added to cart via product card component
+    console.log('Product added to cart:', product);
   }
-} 
+
+  // Helper method to clean image URLs from API response
+  getCleanImageUrl(imageUrl: string): string {
+    if (!imageUrl) return '';
+    
+    // Remove data-src wrapper if exists
+    if (imageUrl.includes('data-src=')) {
+      const match = imageUrl.match(/data-src="([^"]+)"/);
+      if (match && match[1]) {
+        return match[1];
+      }
+    }
+    
+    // Remove extra quotes if exists
+    if (imageUrl.startsWith('"') && imageUrl.endsWith('"')) {
+      return imageUrl.slice(1, -1);
+    }
+    
+    // Remove escaped quotes if exists
+    if (imageUrl.includes('\\"')) {
+      return imageUrl.replace(/\\"/g, '');
+    }
+    
+    return imageUrl;
+  }
+}

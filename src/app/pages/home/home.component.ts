@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { ViewportScroller } from '@angular/common';
 import { ProductService } from '../../services/product.service';
 import { OrderService } from '../../services/order.service';
 import { CartService } from '../../services/cart.service';
@@ -40,10 +41,14 @@ export class HomeComponent implements OnInit {
     private cartService: CartService,
     private wishlistService: WishlistService,
     private storageService: StorageService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private viewportScroller: ViewportScroller
   ) {}
 
   ngOnInit(): void {
+    // Scroll to top when component initializes
+    this.viewportScroller.scrollToPosition([0, 0]);
+    
     this.loadCategories();
     this.loadFeaturedProducts();
     this.loadBestSellers();
@@ -51,6 +56,9 @@ export class HomeComponent implements OnInit {
     this.loadCurrentOrder();
     this.loadStorageInfo();
     this.subscribeToServices();
+    
+    // Test API response structure
+    this.testAPIResponse();
   }
 
   // Data loading methods
@@ -58,6 +66,7 @@ export class HomeComponent implements OnInit {
     this.productService.getCategories().subscribe({
       next: (categories) => {
         this.categories = categories;
+        console.log(this.categories);
       },
       error: (error) => {
         console.error('Error loading categories:', error);
@@ -67,9 +76,11 @@ export class HomeComponent implements OnInit {
   }
 
   loadFeaturedProducts(): void {
-    this.productService.getFeaturedProducts().subscribe({
+    this.productService.getFeaturedProductsFromAPI().subscribe({
       next: (products) => {
         this.featuredProducts = products;
+        console.log('Featured Products loaded:', products);
+        console.log('Featured Products count:', products.length);
       },
       error: (error) => {
         console.error('Error loading featured products:', error);
@@ -79,9 +90,11 @@ export class HomeComponent implements OnInit {
   }
 
   loadBestSellers(): void {
-    this.productService.getBestSellers().subscribe({
+    this.productService.getBestSellersFromAPI().subscribe({
       next: (products) => {
         this.bestSellers = products;
+        console.log('Best Sellers loaded:', products);
+        console.log('Best Sellers count:', products.length);
       },
       error: (error) => {
         console.error('Error loading best sellers:', error);
@@ -91,13 +104,15 @@ export class HomeComponent implements OnInit {
   }
 
   loadOnSaleProducts(): void {
-    this.productService.getOnSaleProducts().subscribe({
+    this.productService.getSpecialOfferProductsFromAPI().subscribe({
       next: (products) => {
         this.onSaleProducts = products;
+        console.log('Special Offer Products loaded:', products);
+        console.log('Special Offer Products count:', products.length);
       },
       error: (error) => {
-        console.error('Error loading on sale products:', error);
-        this.notificationService.error('خطأ', 'فشل في تحميل المنتجات المخفضة');
+        console.error('Error loading special offer products:', error);
+        this.notificationService.error('خطأ', 'فشل في تحميل العروض الخاصة');
       }
     });
   }
@@ -217,4 +232,41 @@ export class HomeComponent implements OnInit {
   isStorageHealthy(): boolean {
     return this.storageInfo ? !this.storageInfo.quotaExceeded : true;
   }
-} 
+
+  // Helper method to clean image URLs from API response
+  getCleanImageUrl(imageUrl: string): string {
+    if (!imageUrl) return '';
+    
+    // Remove data-src wrapper if exists
+    if (imageUrl.includes('data-src=')) {
+      const match = imageUrl.match(/data-src="([^"]+)"/);
+      if (match && match[1]) {
+        return match[1];
+      }
+    }
+    
+    // Remove extra quotes if exists
+    if (imageUrl.startsWith('"') && imageUrl.endsWith('"')) {
+      return imageUrl.slice(1, -1);
+    }
+    
+    // Remove escaped quotes if exists
+    if (imageUrl.includes('\\"')) {
+      return imageUrl.replace(/\\"/g, '');
+    }
+    
+    return imageUrl;
+  }
+
+  // Test API response structure
+  testAPIResponse(): void {
+    this.productService.testAPIResponse().subscribe({
+      next: (response) => {
+        console.log('API Test completed in home component');
+      },
+      error: (error) => {
+        console.error('API Test failed in home component:', error);
+      }
+    });
+  }
+}

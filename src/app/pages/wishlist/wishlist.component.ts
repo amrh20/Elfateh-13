@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, ViewportScroller } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { WishlistService } from '../../services/wishlist.service';
 import { CartService } from '../../services/cart.service';
+import { NotificationService } from '../../services/notification.service';
+import { ConfirmationDialogService } from '../../services/confirmation-dialog.service';
 import { Product } from '../../models/product.model';
 import { ProductCardComponent } from '../../components/product-card/product-card.component';
 
@@ -10,106 +12,119 @@ import { ProductCardComponent } from '../../components/product-card/product-card
   selector: 'app-wishlist',
   standalone: true,
   imports: [CommonModule, RouterModule, ProductCardComponent],
-  template: `
-    <div class="bg-gray-50 min-h-screen py-8">
-      <div class="container mx-auto px-4">
-        <h1 class="text-3xl font-bold text-gray-800 mb-8">المفضلة</h1>
-
-        <div *ngIf="wishlistItems.length > 0">
-          <!-- Header -->
-          <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-            <div class="flex items-center justify-between">
-              <div>
-                <h2 class="text-xl font-semibold text-gray-800">
-                  المنتجات المفضلة ({{ wishlistItems.length }})
-                </h2>
-                <p class="text-gray-600 text-sm mt-1">
-                  احفظ المنتجات التي تريدها لشرائها لاحقاً
-                </p>
-              </div>
-              
-              <button (click)="clearWishlist()" 
-                      class="text-red-600 hover:text-red-700 text-sm font-semibold">
-                مسح الكل
-              </button>
-            </div>
-          </div>
-
-          <!-- Products Grid -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-8 lg:gap-12">
-            <app-product-card *ngFor="let product of wishlistItems" 
-                             [product]="product"
-                             (addToCartEvent)="onAddToCart($event)">
-            </app-product-card>
-          </div>
-
-          <!-- Quick Actions -->
-          <div class="mt-12 bg-white rounded-lg shadow-md p-6">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">إجراءات سريعة</h3>
-            <div class="flex flex-col sm:flex-row gap-4">
-              <button (click)="addAllToCart()" 
-                      class="bg-red-600 text-white px-6 py-3 rounded-md hover:bg-red-700 transition-colors">
-                إضافة الكل للسلة
-              </button>
-              <a routerLink="/categories" 
-                 class="bg-gray-200 text-gray-700 px-6 py-3 rounded-md hover:bg-gray-300 transition-colors text-center">
-                متابعة التسوق
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Empty Wishlist -->
-        <div *ngIf="wishlistItems.length === 0" class="text-center py-16">
-          <div class="bg-white rounded-lg shadow-md p-12 max-w-md mx-auto">
-            <svg class="w-24 h-24 text-gray-400 mx-auto mb-6" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
-              </path>
-            </svg>
-            <h2 class="text-2xl font-semibold text-gray-600 mb-4">قائمة المفضلة فارغة</h2>
-            <p class="text-gray-500 mb-8">
-              لم تقم بإضافة أي منتجات إلى المفضلة بعد. ابدأ بتصفح منتجاتنا وأضف ما يعجبك!
-            </p>
-            <a routerLink="/categories" 
-               class="bg-red-600 text-white px-8 py-3 rounded-md hover:bg-red-700 transition-colors">
-              تصفح المنتجات
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  `,
-  styles: []
+  templateUrl: './wishlist.component.html',
+  styleUrls: ['./wishlist.component.scss']
 })
 export class WishlistComponent implements OnInit {
-  wishlistItems: Product[] = [];
+  wishlistItems: any[] = [];
 
   constructor(
     private wishlistService: WishlistService,
-    private cartService: CartService
+    private cartService: CartService,
+    private notificationService: NotificationService,
+    private confirmationService: ConfirmationDialogService,
+    private viewportScroller: ViewportScroller
   ) {}
 
   ngOnInit(): void {
+    // Scroll to top when component initializes
+    this.viewportScroller.scrollToPosition([0, 0]);
+    
     this.wishlistService.getWishlistItems().subscribe(items => {
       this.wishlistItems = items;
     });
   }
 
-  onAddToCart(product: Product): void {
+  onAddToCart(product: any): void {
     // Product added to cart via product card component
+    // يتم حذف المنتج من المفضلة بعد إضافته للسلة بنجاح
+    setTimeout(() => {
+      const productId = product._id || product.id;
+      if (productId) {
+        this.wishlistService.removeFromWishlist(productId);
+        this.notificationService.info(
+          'تم الحذف من المفضلة', 
+          `تم حذف ${product.name} من المفضلة بعد إضافته للسلة`
+        );
+      }
+    }, 500); // تأخير بسيط للسماح بإتمام عملية الإضافة للسلة
   }
 
-  addAllToCart(): void {
+  async addAllToCart(): Promise<void> {
+    if (this.wishlistItems.length === 0) {
+      this.notificationService.warning('المفضلة فارغة', 'لا توجد منتجات في المفضلة لإضافتها للسلة');
+      return;
+    }
+
+    // تأكيد من المستخدم باستخدام popup جميل
+    const confirmed = await this.confirmationService.confirmSuccess(
+      'إضافة المنتجات للسلة',
+      `هل تريد إضافة المنتجات (${this.wishlistItems.length}) إلى السلة وحذفها من المفضلة؟`,
+      '✅ نعم، أضف الكل',
+      '❌ إلغاء'
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    let addedCount = 0;
+    let errorCount = 0;
+    const productsToRemove: (string | number)[] = [];
+
     this.wishlistItems.forEach(product => {
-      if (product.inStock) {
-        this.cartService.addToCart(product);
+      // التحقق من توفر المنتج
+      if (product.stock || product.inStock) {
+        const result = this.cartService.addToCart(product);
+        if (result.success) {
+          addedCount++;
+          // إضافة معرف المنتج لقائمة الحذف من المفضلة
+          productsToRemove.push(product._id || product.id);
+        } else {
+          errorCount++;
+        }
+      } else {
+        errorCount++;
       }
     });
+
+    // حذف المنتجات المضافة بنجاح من المفضلة
+    productsToRemove.forEach(productId => {
+      this.wishlistService.removeFromWishlist(productId);
+    });
+
+    // عرض النتائج للمستخدم
+    if (addedCount > 0) {
+      if (errorCount === 0) {
+        this.notificationService.success(
+          'تم بنجاح!', 
+          `تم إضافة المنتجات (${addedCount}) إلى السلة وحذفها من المفضلة`
+        );
+      } else {
+        this.notificationService.success(
+          'تم جزئياً', 
+          `تم إضافة ${addedCount} منتج للسلة. ${errorCount} منتج غير متوفر`
+        );
+      }
+    } else {
+      this.notificationService.error(
+        'فشل العملية', 
+        'لم يتم إضافة أي منتج. المنتجات غير متوفرة'
+      );
+    }
   }
 
-  clearWishlist(): void {
-    if (confirm('هل أنت متأكد من حذف جميع المنتجات من المفضلة؟')) {
-      this.wishlistService.clearWishlist();
+  async clearWishlist(): Promise<void> {
+    const confirmed = await this.confirmationService.confirmDanger(
+      'مسح جميع المنتجات',
+      'هل أنت متأكد من حذف المنتجات من المفضلة؟ لا يمكن التراجع عن هذا الإجراء.',
+      '🗑️ نعم، احذف الكل',
+      '❌ إلغاء'
+    );
+
+    if (confirmed) {
+      const result = this.wishlistService.clearWishlist();
+      this.notificationService.showWishlistResult(result);
     }
   }
 } 

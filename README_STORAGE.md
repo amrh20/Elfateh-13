@@ -125,7 +125,7 @@ this.wishlistService.migrateFromOldStorage();
 // البحث في المفضلة
 const searchResults = this.wishlistService.searchInWishlist('لابتوب');
 
-// تصفية حسب الفئة
+// تصفية حسب الصنف
 const categoryProducts = this.wishlistService.getProductsByCategory('إلكترونيات');
 
 // تصفية حسب العلامة التجارية
