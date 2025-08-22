@@ -17,14 +17,14 @@ export class OrderService {
       items: [
         {
           product: {
-            id: 1,
+            _id: 1,
             name: 'منظف أرضيات لافندر',
             description: 'منظف أرضيات برائحة اللافندر',
             price: 45.99,
             image: 'https://via.placeholder.com/150',
             category: 'منظفات',
             brand: 'فيري',
-            inStock: true,
+            stock: 10,
             rating: 4.5,
             reviews: 128,
             isOnSale: false,
@@ -34,14 +34,14 @@ export class OrderService {
         },
         {
           product: {
-            id: 2,
+            _id: 2,
             name: 'إسفنجة أطباق',
             description: 'إسفنجة أطباق عالية الجودة',
             price: 12.99,
             image: 'https://via.placeholder.com/150',
             category: 'أدوات مطبخ',
             brand: 'سكوتش',
-            inStock: true,
+            stock: 10,
             rating: 4.2,
             reviews: 89,
             isOnSale: true,

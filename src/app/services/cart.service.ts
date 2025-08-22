@@ -27,10 +27,10 @@ export class CartService {
     return this.cartItems.reduce((total, item) => total + item.quantity, 0);
   }
 
-  addToCart(product: Product, quantity: number = 1): { success: boolean; message: string } {
+  addToCart(product: any, quantity: number = 1): { success: boolean; message: string } {
     try {
       // Validate input
-      if (!product || !product.id) {
+      if (!product || !product._id) {
         return { success: false, message: 'منتج غير صالح' };
       }
 
@@ -43,7 +43,7 @@ export class CartService {
         return { success: false, message: 'السلة ممتلئة، يرجى إزالة بعض المنتجات أولاً' };
       }
 
-      const existingItem = this.cartItems.find(item => item.product.id === product.id);
+      const existingItem: any = this.cartItems.find((item: any) => item.product._id === product._id);
       
       if (existingItem) {
         existingItem.quantity += quantity;
@@ -62,12 +62,12 @@ export class CartService {
 
   removeFromCart(productId: number): { success: boolean; message: string } {
     try {
-      const item = this.cartItems.find(item => item.product.id === productId);
+      const item: any = this.cartItems.find((item: any) => item.product._id === productId);
       if (!item) {
         return { success: false, message: 'المنتج غير موجود في السلة' };
       }
 
-      this.cartItems = this.cartItems.filter(item => item.product.id !== productId);
+      this.cartItems = this.cartItems.filter((item: any) => item.product._id !== productId);
       this.updateCart();
       return { success: true, message: `تم إزالة ${item.product.name} من السلة` };
     } catch (error) {
@@ -82,7 +82,7 @@ export class CartService {
         return this.removeFromCart(productId);
       }
 
-      const item = this.cartItems.find(item => item.product.id === productId);
+      const item: any = this.cartItems.find((item: any) => item.product._id === productId);
       if (!item) {
         return { success: false, message: 'المنتج غير موجود في السلة' };
       }
@@ -199,7 +199,7 @@ export class CartService {
           this.cartItems = parsedCart.filter(item => 
             item && 
             item.product && 
-            item.product.id && 
+            item.product._id && 
             typeof item.quantity === 'number' && 
             item.quantity > 0
           );
@@ -242,7 +242,7 @@ export class CartService {
           if (Array.isArray(parsedData) && parsedData.length > 0) {
             // Merge with current cart
             parsedData.forEach(item => {
-              if (item && item.product && item.product.id) {
+              if (item && item.product && item.product._id) {
                 this.addToCart(item.product, item.quantity || 1);
               }
             });

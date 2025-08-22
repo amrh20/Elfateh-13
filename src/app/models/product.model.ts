@@ -1,21 +1,33 @@
 export interface Product {
-  id: number;
+  _id?: string | number;
+  id?: number;
   name: string;
   description: string;
   price: number;
   originalPrice?: number;
-  image: string;
-  category: string;
+  image?: string;
+  images?: string[];
+  category?: string;
   subCategory?: string;
-  brand: string;
-  inStock: boolean;
-  rating: number;
-  reviews: number;
-  isOnSale: boolean;
+  subcategory?: any;
+  brand?: string;
+  stock?: number;
+  inStock?: boolean;
+  rating?: number;
+  reviews?: number;
+  isOnSale?: boolean;
   discountPercentage?: number;
-  images: string[];
+  discount?: number;
+  priceAfterDiscount?: number;
   specifications?: { [key: string]: string };
   quantity?: number;
+  productType?: string;
+  featured?: boolean;
+  bestSeller?: boolean;
+  specialOffer?: boolean;
+  isActive?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface SubCategory {

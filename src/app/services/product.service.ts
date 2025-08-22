@@ -13,52 +13,7 @@ export class ProductService {
 
   // Fallback mock products for development/testing
   private fallbackProducts: Product[] = [
-    {
-      id: 1,
-      name: 'منظف أرضيات لافندر',
-      description: 'منظف أرضيات عالي الجودة برائحة اللافندر المنعشة، مناسب لجميع أنواع الأرضيات',
-      price: 45,
-      originalPrice: 60,
-      image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400',
-      category: 'منظفات',
-      subCategory: 'منظفات أرضيات',
-      brand: 'فريش',
-      inStock: true,
-      rating: 4.5,
-      reviews: 128,
-      isOnSale: true,
-      discountPercentage: 25,
-      images: [
-        'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400',
-        'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400'
-      ],
-      specifications: {
-        'الحجم': '1 لتر',
-        'الرائحة': 'لافندر',
-        'النوع': 'سائل'
-      }
-    },
-    {
-      id: 2,
-      name: 'سائل غسيل الأطباق',
-      description: 'سائل غسيل أطباق فعال يزيل الدهون بسهولة ويحمي يديك',
-      price: 35,
-      image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400',
-      category: 'منظفات',
-      subCategory: 'منظفات أطباق',
-      brand: 'فيري',
-      inStock: true,
-      rating: 4.2,
-      reviews: 95,
-      isOnSale: false,
-      images: [
-        'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400'
-      ],
-      specifications: {
-        'الحجم': '750 مل',
-        'النوع': 'سائل'
-      }
-    }
+  
   ];
 
   // Fallback mock categories for development/testing
@@ -111,18 +66,18 @@ export class ProductService {
     );
   }
 
-  getProductById(id: number): Observable<Product | undefined> {
+  getProductById(id: string | number): Observable<Product | undefined> {
     // Try to get product from API first, fallback to mock data
     return this.http.get<any>(`${environment.apiUrl}/products/${id}`).pipe(
       map(response => {
         if (response.success && response.data) {
           return response.data;
         }
-        return this.fallbackProducts.find(p => p.id === id);
+        return this.fallbackProducts.find(p => p._id === id);
       }),
       catchError(() => {
         console.log('Using fallback product');
-        return of(this.fallbackProducts.find(p => p.id === id));
+        return of(this.fallbackProducts.find(p => p._id === id));
       })
     );
   }
@@ -166,11 +121,11 @@ export class ProductService {
         if (response.success && response.data) {
           return response.data;
         }
-        return this.fallbackProducts.filter(p => p.rating >= 4.5).slice(0, 4);
+        return this.fallbackProducts.filter(p => (p.rating || 0) >= 4.5).slice(0, 4);
       }),
       catchError(() => {
         console.log('Using fallback featured products');
-        return of(this.fallbackProducts.filter(p => p.rating >= 4.5).slice(0, 4));
+        return of(this.fallbackProducts.filter(p => (p.rating || 0) >= 4.5).slice(0, 4));
       })
     );
   }
@@ -182,11 +137,11 @@ export class ProductService {
         if (response.success && response.data) {
           return response.data;
         }
-        return this.fallbackProducts.filter(p => p.reviews >= 100).slice(0, 4);
+        return this.fallbackProducts.filter(p => (p.reviews || 0) >= 100).slice(0, 4);
       }),
       catchError(() => {
         console.log('Using fallback best sellers');
-        return of(this.fallbackProducts.filter(p => p.reviews >= 100).slice(0, 4));
+        return of(this.fallbackProducts.filter(p => (p.reviews || 0) >= 100).slice(0, 4));
       })
     );
   }
@@ -233,7 +188,7 @@ export class ProductService {
         return this.fallbackProducts.filter(p => 
           p.name.toLowerCase().includes(query.toLowerCase()) ||
           p.description.toLowerCase().includes(query.toLowerCase()) ||
-          p.brand.toLowerCase().includes(query.toLowerCase())
+          (p.brand || '').toLowerCase().includes(query.toLowerCase())
         );
       }),
       catchError(() => {
@@ -241,8 +196,42 @@ export class ProductService {
         return of(this.fallbackProducts.filter(p => 
           p.name.toLowerCase().includes(query.toLowerCase()) ||
           p.description.toLowerCase().includes(query.toLowerCase()) ||
-          p.brand.toLowerCase().includes(query.toLowerCase())
+          (p.brand || '').toLowerCase().includes(query.toLowerCase())
         ));
+      })
+    );
+  }
+
+  // Get products with filters and pagination
+  getProductsWithFilters(queryString: string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/products?${queryString}`).pipe(
+      map(response => {
+        if (response.success && response.data) {
+          return response;
+        }
+        // Fallback to mock data if API fails
+        return {
+          success: true,
+          data: {
+            products: this.fallbackProducts,
+            total: this.fallbackProducts.length,
+            page: 1,
+            limit: 12
+          }
+        };
+      }),
+      catchError((err) => {
+        console.error('Error loading products with filters:', err);
+        // Return fallback data
+        return of({
+          success: true,
+          data: {
+            products: this.fallbackProducts,
+            total: this.fallbackProducts.length,
+            page: 1,
+            limit: 12
+          }
+        });
       })
     );
   }

@@ -1,0 +1,183 @@
+// Wishlist Component Styles
+.wishlist-container {
+  .wishlist-header {
+    h1 {
+      @apply text-3xl font-bold text-gray-800 mb-8;
+      background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+
+  .wishlist-info-card {
+    @apply bg-white rounded-lg shadow-md p-6 mb-8;
+    
+    .info-content {
+      @apply flex items-center justify-between;
+      
+      .info-text {
+        h2 {
+          @apply text-xl font-semibold text-gray-800;
+        }
+        
+        p {
+          @apply text-gray-600 text-sm mt-1;
+        }
+      }
+      
+      .clear-button {
+        @apply text-red-600 hover:text-red-700 text-sm font-semibold hover:bg-red-50 px-3 py-2 rounded-md transition-all duration-200;
+        
+        &:hover {
+          @apply transform scale-105;
+        }
+      }
+    }
+  }
+
+  .products-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-8 lg:gap-12;
+    
+    .product-card {
+      @apply transition-all duration-300;
+      
+      &:hover {
+        @apply transform scale-105;
+      }
+    }
+  }
+
+  .quick-actions {
+    @apply mt-12 bg-white rounded-lg shadow-md p-6;
+    
+    h3 {
+      @apply text-lg font-semibold text-gray-800 mb-4;
+    }
+    
+    .actions-container {
+      @apply flex flex-col sm:flex-row gap-4;
+      
+      .add-all-btn {
+        @apply bg-red-600 text-white px-6 py-3 rounded-md hover:bg-red-700 transition-all duration-300 font-semibold hover:scale-105 transform shadow-md hover:shadow-lg;
+        
+        svg {
+          @apply w-5 h-5 inline-block ml-2;
+        }
+      }
+      
+      .continue-shopping-btn {
+        @apply bg-gray-200 text-gray-700 px-6 py-3 rounded-md hover:bg-gray-300 transition-all duration-300 text-center font-semibold hover:scale-105 transform shadow-md hover:shadow-lg;
+        
+        svg {
+          @apply w-5 h-5 inline-block ml-2;
+        }
+      }
+    }
+  }
+
+  .empty-wishlist {
+    @apply text-center py-16;
+    
+    .empty-card {
+      @apply bg-white rounded-lg shadow-md p-12 max-w-md mx-auto;
+      
+      .wishlist-empty-icon {
+        @apply mb-6;
+        
+        svg {
+          @apply w-24 h-24 text-gray-400 mx-auto;
+          animation: heartBeat 2s ease-in-out infinite;
+        }
+      }
+      
+      h2 {
+        @apply text-2xl font-semibold text-gray-600 mb-4;
+      }
+      
+      p {
+        @apply text-gray-500 mb-8;
+      }
+      
+      .browse-products-btn {
+        @apply bg-red-600 text-white px-8 py-3 rounded-md hover:bg-red-700 transition-all duration-300 font-semibold hover:scale-105 transform shadow-md hover:shadow-lg;
+        
+        svg {
+          @apply w-5 h-5 inline-block ml-2;
+        }
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes heartBeat {
+  0% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.1);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.1);
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+
+// Responsive Design
+@media (max-width: 1024px) {
+  .wishlist-container {
+    .products-grid {
+      @apply lg:grid-cols-2;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .wishlist-container {
+    .wishlist-info-card {
+      .info-content {
+        @apply flex-col space-y-4 text-center;
+      }
+    }
+    
+    .quick-actions {
+      .actions-container {
+        @apply flex-col;
+      }
+    }
+    
+    .products-grid {
+      @apply sm:grid-cols-1;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .wishlist-container {
+    .wishlist-header {
+      h1 {
+        @apply text-2xl;
+      }
+    }
+    
+    .empty-wishlist {
+      .empty-card {
+        @apply p-8;
+        
+        .wishlist-empty-icon svg {
+          @apply w-20 h-20;
+        }
+        
+        h2 {
+          @apply text-xl;
+        }
+      }
+    }
+  }
+}

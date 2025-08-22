@@ -314,7 +314,7 @@ export class CategoriesComponent implements OnInit {
       filtered = filtered.filter(product => 
         product.name.toLowerCase().includes(query) ||
         product.description.toLowerCase().includes(query) ||
-        product.brand.toLowerCase().includes(query)
+(product.brand || '').toLowerCase().includes(query)
       );
     }
 
@@ -327,14 +327,18 @@ export class CategoriesComponent implements OnInit {
         case 'price-high':
           filtered.sort((a, b) => b.price - a.price);
           break;
-        case 'rating':
-          filtered.sort((a, b) => b.rating - a.rating);
-          break;
+        // case 'rating':
+        //   filtered.sort((a, b) => b.rating - a.rating);
+        //   break;
         case 'name':
           filtered.sort((a, b) => a.name.localeCompare(b.name));
           break;
         case 'newest':
-          filtered.sort((a, b) => b.id - a.id);
+          filtered.sort((a, b) => {
+            const aId = typeof a._id === 'number' ? a._id : 0;
+            const bId = typeof b._id === 'number' ? b._id : 0;
+            return bId - aId;
+          });
           break;
       }
     }

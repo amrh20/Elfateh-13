@@ -349,3 +349,38 @@
 .absolute {
   position: absolute !important;
 }
+
+.from-purple-600  {
+  background: linear-gradient(to right, #8b5cf6, #6b21a8);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 6px rgba(139, 92, 246, 0.2);
+}
+
+.from-yellow-500  {
+  background: linear-gradient(to right, #f59e0b, #d97706);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 6px rgba(245, 158, 11, 0.2);  
+}
+.from-green-600 {
+  background: linear-gradient(to right, #10b981, #059669);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 6px rgba(16, 185, 129, 0.2);
+}

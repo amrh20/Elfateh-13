@@ -71,7 +71,7 @@ import { trigger, state, style, transition, animate, keyframes } from '@angular/
   ]
 })
 export class ProductCardComponent {
-  @Input() product!: Product;
+  @Input() product!: any;
   @Output() addToCartEvent = new EventEmitter<Product>();
 
   // حالات الأنيميشن
@@ -89,7 +89,7 @@ export class ProductCardComponent {
   ) {}
 
   get isInWishlist(): boolean {
-    return this.wishlistService.isInWishlist(this.product.id);
+    return this.wishlistService.isInWishlist(this.product._id || this.product.id);
   }
 
   // إظهار tooltip الوصف
@@ -103,7 +103,8 @@ export class ProductCardComponent {
   }
 
   addToCart(): void {
-    if (this.product.inStock) {
+    if (this.product.stock) {
+      console.log(this.product);
       // تشغيل أنيميشن الإضافة
       this.cartAnimationState = 'added';
       
@@ -137,7 +138,7 @@ export class ProductCardComponent {
       // أنيميشن الإزالة
       this.wishlistAnimationState = 'removed';
       
-      const result = this.wishlistService.removeFromWishlist(this.product.id);
+      const result = this.wishlistService.removeFromWishlist(this.product._id || this.product.id);
       this.notificationService.showWishlistResult(result);
       
       // إعادة تعيين الحالة
@@ -160,7 +161,7 @@ export class ProductCardComponent {
 
   // Quick add to cart with quantity
   quickAddToCart(quantity: number = 1): void {
-    if (this.product.inStock) {
+    if (this.product.stock) {
       this.cartAnimationState = 'added';
       
       const result = this.cartService.addToCart(this.product, quantity);
@@ -221,5 +222,49 @@ export class ProductCardComponent {
     }
     
     return imageUrl;
+  }
+
+  // Price and Discount Methods
+  hasDiscount(): boolean {
+    return (this.product.discount && this.product.discount > 0) || 
+           (this.product.priceAfterDiscount && this.product.priceAfterDiscount < this.product.price) ||
+           this.product.isOnSale;
+  }
+
+  getCurrentPrice(): number {
+    if (this.product.priceAfterDiscount && this.product.priceAfterDiscount > 0) {
+      return this.product.priceAfterDiscount;
+    }
+    
+    if (this.product.discount && this.product.discount > 0) {
+      return Math.max(0, this.product.price - this.product.discount);
+    }
+    
+    return this.product.price;
+  }
+
+  getDiscountAmount(): number {
+    if (this.product.discount && this.product.discount > 0) {
+      return this.product.discount;
+    }
+    
+    if (this.product.priceAfterDiscount && this.product.priceAfterDiscount > 0) {
+      return this.product.price - this.product.priceAfterDiscount;
+    }
+    
+    return 0;
+  }
+
+  calculateDiscountPercentage(): number {
+    if (!this.hasDiscount()) return 0;
+    
+    const originalPrice = this.product.price;
+    const discountAmount = this.getDiscountAmount();
+    
+    if (originalPrice > 0) {
+      return Math.round((discountAmount / originalPrice) * 100);
+    }
+    
+    return 0;
   }
 } 

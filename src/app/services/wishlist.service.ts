@@ -6,7 +6,7 @@ import { Product } from '../models/product.model';
   providedIn: 'root'
 })
 export class WishlistService {
-  private wishlistItems: Product[] = [];
+  private wishlistItems: any[] = [];
   private wishlistSubject = new BehaviorSubject<Product[]>([]);
   private readonly STORAGE_KEY = 'elfateh_wishlist';
   private readonly MAX_WISHLIST_ITEMS = 200; // Prevent excessive storage usage
@@ -23,15 +23,16 @@ export class WishlistService {
     return this.wishlistItems;
   }
 
-  addToWishlist(product: Product): { success: boolean; message: string } {
+  addToWishlist(product: any): { success: boolean; message: string } {
     try {
       // Validate input
-      if (!product || !product.id) {
+      const productId = product._id || product.id;
+      if (!product || !productId) {
         return { success: false, message: 'منتج غير صالح' };
       }
 
       // Check if already in wishlist
-      if (this.isInWishlist(product.id)) {
+      if (this.isInWishlist(productId)) {
         return { success: false, message: 'المنتج موجود بالفعل في المفضلة' };
       }
 
@@ -49,14 +50,14 @@ export class WishlistService {
     }
   }
 
-  removeFromWishlist(productId: number): { success: boolean; message: string } {
+  removeFromWishlist(productId: number | string): { success: boolean; message: string } {
     try {
-      const item = this.wishlistItems.find(item => item.id === productId);
+      const item = this.wishlistItems.find((item: any) => (item._id || item.id) === productId);
       if (!item) {
         return { success: false, message: 'المنتج غير موجود في المفضلة' };
       }
 
-      this.wishlistItems = this.wishlistItems.filter(item => item.id !== productId);
+      this.wishlistItems = this.wishlistItems.filter(item => (item._id || item.id) !== productId);
       this.updateWishlist();
       return { success: true, message: `تم إزالة ${item.name} من المفضلة` };
     } catch (error) {
@@ -65,8 +66,8 @@ export class WishlistService {
     }
   }
 
-  isInWishlist(productId: number): boolean {
-    return this.wishlistItems.some(item => item.id === productId);
+  isInWishlist(productId: number | string): boolean {
+    return this.wishlistItems.some(item => (item._id || item.id) === productId);
   }
 
   clearWishlist(): { success: boolean; message: string } {
@@ -121,7 +122,12 @@ export class WishlistService {
   // Move item from wishlist to cart (useful for quick actions)
   moveToCart(product: Product): { success: boolean; message: string } {
     try {
-      const result = this.removeFromWishlist(product.id);
+      const productId = product._id || product.id;
+      if (!productId) {
+        return { success: false, message: 'معرف المنتج غير صالح' };
+      }
+      
+      const result = this.removeFromWishlist(productId);
       if (result.success) {
         return { success: true, message: `تم نقل ${product.name} من المفضلة إلى السلة` };
       }
@@ -198,7 +204,7 @@ export class WishlistService {
         if (Array.isArray(parsedWishlist)) {
           this.wishlistItems = parsedWishlist.filter(item => 
             item && 
-            item.id && 
+            (item._id || item.id) && 
             item.name && 
             item.price &&
             typeof item.price === 'number'
@@ -242,7 +248,8 @@ export class WishlistService {
           if (Array.isArray(parsedData) && parsedData.length > 0) {
             // Merge with current wishlist
             parsedData.forEach(item => {
-              if (item && item.id && !this.isInWishlist(item.id)) {
+              const itemId = item._id || item.id;
+              if (item && itemId && !this.isInWishlist(itemId)) {
                 this.addToWishlist(item);
               }
             });
@@ -283,8 +290,9 @@ export class WishlistService {
       }
 
       let importedCount = 0;
-      parsedData.items.forEach((item: Product) => {
-        if (item && item.id && !this.isInWishlist(item.id)) {
+      parsedData.items.forEach((item: any) => {
+        const itemId = item._id || item.id;
+        if (item && itemId && !this.isInWishlist(itemId)) {
           this.addToWishlist(item);
           importedCount++;
         }

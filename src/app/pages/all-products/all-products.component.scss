@@ -1,0 +1,174 @@
+// Custom styles for All Products page
+
+.form-group {
+  @apply relative;
+}
+
+// Filters form layout
+.filters-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+// Ensure form elements are properly aligned
+.form-group {
+  display: flex;
+  flex-direction: column;
+  
+  label {
+    margin-bottom: 0.5rem;
+    text-align: right;
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.875rem;
+  }
+  
+  input, select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    background-color: white;
+    transition: all 0.2s ease-in-out;
+    
+    &:hover {
+      border-color: #9ca3af;
+    }
+    
+    &:focus {
+      outline: none;
+      border-color: #ef4444;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+      transform: translateY(-1px);
+    }
+  }
+}
+
+// Responsive grid adjustments
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1025px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+// Sticky header shadow effect
+.sticky {
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.95);
+}
+
+// Form input focus effects
+input:focus, select:focus {
+  @apply ring-2 ring-red-500 border-transparent;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+}
+
+// Button hover effects
+button {
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+// Pagination button styles
+.pagination-button {
+  @apply px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-all duration-200;
+}
+
+.pagination-button.active {
+  @apply text-white bg-red-600 border-red-600;
+}
+
+.pagination-button:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+// Loading animation
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+// Responsive text sizes
+@media (max-width: 640px) {
+  h1 {
+    @apply text-3xl;
+  }
+  
+  .container {
+    @apply px-4;
+  }
+}
+
+// Filter form responsive layout
+@media (max-width: 1024px) {
+  form {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  form {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Search bar responsive
+@media (max-width: 768px) {
+  .search-container {
+    @apply px-4;
+  }
+  
+  input[type="text"] {
+    @apply text-base;
+  }
+}
+
+// Product grid gap adjustments
+@media (max-width: 640px) {
+  .grid {
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 641px) {
+  .grid {
+    gap: 2rem;
+  }
+}
