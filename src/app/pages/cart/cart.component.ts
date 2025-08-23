@@ -113,9 +113,9 @@ export class CartComponent implements OnInit {
           address: {
             street: this.checkoutForm.value.deliveryAddress,
             city: this.checkoutForm.value.city,
-            state: 'Cairo', // Cairo Governorate
-            zipCode: '11511', // Main Cairo postal code
-            country: 'Egypt'
+            // state: 'Cairo', // Cairo Governorate
+            // zipCode: '11511', // Main Cairo postal code
+            // country: 'Egypt'
           }
         },
         items: this.cartItems.map(item => ({
