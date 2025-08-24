@@ -145,8 +145,8 @@
               [@cartAnimation]="cartAnimationState"
               [disabled]="!product.stock"
               class="flex-1 bg-gradient-to-r from-red-500 to-red-700 text-white py-3 px-4 rounded-xl font-semibold hover:from-red-600 hover:to-red-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-red-500/30 relative overflow-hidden group">
-        <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-red-600 to-red-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform scale-x-0 group-hover:scale-x-100 origin-left"></span>
-        <span class="relative z-10">{{ product.stock ? 'أضف للسلة' : 'غير متوفر' }}</span>
+        <!-- إزالة العناصر المتداخلة التي قد تسبب المشكلة -->
+        <span class="relative z-10 !opacity-100">{{ product.stock ? 'أضف للسلة' : 'غير متوفر' }}</span>
       </button>
       
       <a [routerLink]="['/product', product._id]" 
