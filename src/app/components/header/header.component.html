@@ -9,7 +9,7 @@
       </div>
 
       <!-- Desktop Navigation -->
-      <nav class="hidden lg:flex space-x-8 space-x-reverse">
+      <nav class=" lg:flex space-x-8 space-x-reverse nav-bar-wrapper">
         <a routerLink="/home" routerLinkActive="text-red-600 font-semibold" 
            class="text-gray-700 hover:text-red-600 transition-all duration-300 hover:scale-105 font-medium">
           الرئيسية
@@ -90,8 +90,8 @@
         <!-- Mobile Menu Button -->
         <button 
           (click)="toggleMobileMenu()"
-          class="lg:hidden p-2 text-gray-700 hover:text-red-600 transition-all duration-300 hover:bg-red-50 rounded-lg"
-          aria-label="Toggle mobile menu">
+          class="lg:hidden p-2 nav-mobile text-gray-700 hover:text-red-600 transition-all duration-300 hover:bg-red-50 rounded-lg"
+          aria-label="Toggle mobile menu ">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path *ngIf="!isMobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
             <path *ngIf="isMobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
