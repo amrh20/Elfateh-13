@@ -14,7 +14,7 @@ html {
 }
 
 body {
-  font-family: 'Cairo', sans-serif;
+  font-family: 'Cairo', sans-serif !important;
   line-height: 1.6;
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   min-height: 100vh;
