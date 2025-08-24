@@ -31,7 +31,7 @@
       <!-- Actions -->
       <div class="flex items-center space-x-4 space-x-reverse">
         <!-- Wishlist -->
-        <a routerLink="/wishlist" class="relative p-3 text-gray-700 hover:text-red-600 transition-all duration-300 hover:scale-110 hover:bg-red-50 rounded-full group">
+        <a routerLink="/wishlist" class="relative p-3 text-gray-700 hover:text-red-600 transition-all duration-300 hover:scale-110 hover:bg-red-50 rounded-full group btn-animate">
           <div class="relative">
             <!-- Heart Icon -->
             <svg class="w-7 h-7 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,12 +47,12 @@
             </span>
             
             <!-- Hover Effect -->
-            <div class="absolute inset-0 bg-red-100 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+            <div class="absolute inset-0 bg-red-100 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 shadow-inner"></div>
           </div>
         </a>
 
         <!-- Cart -->
-        <a routerLink="/cart" class="relative p-3 text-gray-700 hover:text-red-600 transition-all duration-300 hover:scale-110 hover:bg-red-50 rounded-full group">
+        <a routerLink="/cart" class="relative p-3 text-gray-700 hover:text-red-600 transition-all duration-300 hover:scale-110 hover:bg-red-50 rounded-full group btn-animate">
           <div class="relative">
             <!-- Shopping Bag Icon -->
             <svg class="w-7 h-7 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,12 +68,12 @@
             </span>
             
             <!-- Hover Effect -->
-            <div class="absolute inset-0 bg-red-100 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+            <div class="absolute inset-0 bg-red-100 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 shadow-inner"></div>
           </div>
         </a>
 
         <!-- Profile/Login -->
-        <a routerLink="/profile" class="p-3 text-gray-700 hover:text-red-600 transition-all duration-300 hover:scale-110 hover:bg-red-50 rounded-full group">
+        <a routerLink="/profile" class="p-3 text-gray-700 hover:text-red-600 transition-all duration-300 hover:scale-110 hover:bg-red-50 rounded-full group btn-animate">
           <div class="relative">
             <!-- User Icon -->
             <svg class="w-7 h-7 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,14 +83,14 @@
             </svg>
             
             <!-- Hover Effect -->
-            <div class="absolute inset-0 bg-red-100 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+            <div class="absolute inset-0 bg-red-100 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 shadow-inner"></div>
           </div>
         </a>
 
         <!-- Mobile Menu Button -->
         <button 
           (click)="toggleMobileMenu()"
-          class="lg:hidden p-2 nav-mobile text-gray-700 hover:text-red-600 transition-all duration-300 hover:bg-red-50 rounded-lg"
+          class="lg:hidden p-2 nav-mobile text-gray-700 hover:text-red-600 transition-all duration-300 hover:bg-red-50 rounded-lg btn-animate"
           aria-label="Toggle mobile menu ">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path *ngIf="!isMobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -131,4 +131,4 @@
       </nav>
     </div>
   </div>
-</header> 
+</header>
