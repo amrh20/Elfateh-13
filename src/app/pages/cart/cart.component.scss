@@ -219,3 +219,273 @@
   border-color: #dc2626;
   box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
 }
+
+// Enhanced responsive design for cart page
+.step-progress {
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1rem;
+    
+    .mx-4 {
+      margin: 0;
+      transform: rotate(90deg);
+      width: 4rem;
+      height: 1px;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .w-12.h-12 {
+      width: 3rem;
+      height: 3rem;
+    }
+    
+    .text-sm {
+      font-size: 0.875rem;
+    }
+  }
+}
+
+.step-content {
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  @media (max-width: 768px) {
+    gap: 1.5rem;
+  }
+}
+
+// Cart items responsive improvements
+@media (max-width: 768px) {
+  .cart-container {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  h1 {
+    font-size: 2rem !important;
+    margin-bottom: 1.5rem;
+  }
+  
+  .mb-8 {
+    margin-bottom: 1.5rem;
+  }
+  
+  // Adjust cart item layout
+  .flex.items-center.space-x-4 {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .w-20.h-20 {
+    width: 4rem;
+    height: 4rem;
+  }
+  
+  .text-lg {
+    font-size: 1.125rem;
+  }
+  
+  .text-sm {
+    font-size: 0.875rem;
+  }
+  
+  // Adjust quantity controls
+  .flex.items-center.space-x-2 {
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  .w-8.h-8 {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .w-12 {
+    width: 3rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  h1 {
+    font-size: 1.75rem !important;
+    margin-bottom: 1rem;
+  }
+  
+  .mb-8 {
+    margin-bottom: 1rem;
+  }
+  
+  .p-6 {
+    padding: 1rem;
+  }
+  
+  .w-20.h-20 {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+  
+  .text-lg {
+    font-size: 1rem;
+  }
+  
+  .text-sm {
+    font-size: 0.8rem;
+  }
+  
+  .w-8.h-8 {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+  
+  .w-12 {
+    width: 2.5rem;
+  }
+}
+
+// Checkout form responsive improvements
+@media (max-width: 768px) {
+  .checkout-form {
+    .grid.grid-cols-1.md\\:grid-cols-2 {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    .md\\:col-span-2 {
+      grid-column: 1;
+    }
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-group label {
+    font-size: 0.875rem;
+    margin-bottom: 0.375rem;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  .payment-method {
+    .radio-option {
+      padding: 0.75rem;
+    }
+    
+    .radio-option label {
+      font-size: 0.875rem;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .checkout-form {
+    .grid.grid-cols-1.md\\:grid-cols-2 {
+      gap: 0.75rem;
+    }
+  }
+  
+  .form-group {
+    margin-bottom: 0.75rem;
+  }
+  
+  .form-group label {
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 0.625rem;
+    font-size: 0.8rem;
+  }
+  
+  .payment-method {
+    .radio-option {
+      padding: 0.625rem;
+    }
+    
+    .radio-option label {
+      font-size: 0.8rem;
+    }
+  }
+}
+
+// Navigation buttons responsive improvements
+@media (max-width: 768px) {
+  .navigation-buttons {
+    flex-direction: column;
+    gap: 1rem;
+    
+    .btn-secondary,
+    .submit-button {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      font-size: 1rem;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .navigation-buttons {
+    gap: 0.75rem;
+    
+    .btn-secondary,
+    .submit-button {
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+    }
+  }
+}
+
+// Order summary responsive improvements
+@media (max-width: 768px) {
+  .order-summary {
+    .p-6 {
+      padding: 1rem;
+    }
+    
+    .text-lg {
+      font-size: 1.125rem;
+    }
+    
+    .text-sm {
+      font-size: 0.875rem;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .order-summary {
+    .p-6 {
+      padding: 0.75rem;
+    }
+    
+    .text-lg {
+      font-size: 1rem;
+    }
+    
+    .text-sm {
+      font-size: 0.8rem;
+    }
+  }
+}

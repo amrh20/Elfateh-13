@@ -100,15 +100,392 @@
   }
 }
 
-// Responsive adjustments
-@media (max-width: 1024px) {
-  .lg\:w-80 {
-    width: 100%;
+// Enhanced responsive design for categories page
+.page-header-banner {
+  @media (max-width: 768px) {
+    margin-bottom: 2rem;
+    
+    .px-4.sm\\:px-6.lg\\:px-8 {
+      padding: 1rem;
+    }
+    
+    .py-12.lg\\:py-16 {
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
+    
+    h1 {
+      font-size: 2rem !important;
+      margin-bottom: 1rem;
+    }
+    
+    p {
+      font-size: 1rem !important;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
   }
   
-  .sticky {
+  @media (max-width: 640px) {
+    margin-bottom: 1.5rem;
+    
+    .px-4.sm\\:px-6.lg\\:px-8 {
+      padding: 0.75rem;
+    }
+    
+    .py-12.lg\\:py-16 {
+      padding-top: 1.5rem;
+      padding-bottom: 1.5rem;
+    }
+    
+    h1 {
+      font-size: 1.75rem !important;
+      margin-bottom: 0.75rem;
+    }
+    
+    p {
+      font-size: 0.9rem !important;
+      padding-left: 0.25rem;
+      padding-right: 0.25rem;
+    }
+  }
+}
+
+// Container responsive improvements
+@media (max-width: 1024px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .flex.flex-col.lg\\:flex-row {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .lg\\:w-80 {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .flex.flex-col.lg\\:flex-row {
+    gap: 1.5rem;
+  }
+  
+  .gap-8 {
+    gap: 1.5rem;
+  }
+  
+  // Adjust sidebar
+  .bg-white.rounded-2xl.shadow-lg.p-6 {
+    padding: 1rem;
+  }
+  
+  .sticky.top-8 {
     position: relative;
     top: 0;
+  }
+  
+  // Adjust search input
+  input[type="text"] {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  // Adjust category items
+  .p-4 {
+    padding: 0.75rem;
+  }
+  
+  .w-10.h-10 {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  .w-5.h-5 {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  // Adjust subcategory items
+  .pr-4 {
+    padding-right: 0.75rem;
+  }
+  
+  .p-3 {
+    padding: 0.75rem;
+  }
+  
+  .w-8.h-8 {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .w-4.h-4 {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  .flex.flex-col.lg\\:flex-row {
+    gap: 1rem;
+  }
+  
+  .gap-8 {
+    gap: 1rem;
+  }
+  
+  // Adjust sidebar
+  .bg-white.rounded-2xl.shadow-lg.p-6 {
+    padding: 0.75rem;
+  }
+  
+  // Adjust search input
+  input[type="text"] {
+    padding: 0.625rem;
+    font-size: 0.8rem;
+  }
+  
+  // Adjust category items
+  .p-4 {
+    padding: 0.625rem;
+  }
+  
+  .w-10.h-10 {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .w-5.h-5 {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  // Adjust subcategory items
+  .pr-4 {
+    padding-right: 0.5rem;
+  }
+  
+  .p-3 {
+    padding: 0.625rem;
+  }
+  
+  .w-8.h-8 {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+  
+  .w-4.h-4 {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+}
+
+// Products section responsive improvements
+@media (max-width: 1024px) {
+  .lg\\:flex-1 {
+    flex: 1;
+  }
+  
+  .grid.grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-3.xl\\:grid-cols-4 {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .grid.grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-3.xl\\:grid-cols-4 {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  
+  .gap-6 {
+    gap: 1rem;
+  }
+  
+  // Adjust product search
+  .mb-6 {
+    margin-bottom: 1rem;
+  }
+  
+  .px-4.py-3 {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  // Adjust no products message
+  .py-16 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+  
+  .p-8 {
+    padding: 1.5rem;
+  }
+  
+  .w-16.h-16 {
+    width: 4rem;
+    height: 4rem;
+  }
+  
+  .text-lg {
+    font-size: 1.125rem;
+  }
+  
+  .text-sm {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .grid.grid-cols-1.sm\\:grid-cols-2.lg\\:grid-cols-3.xl\\:grid-cols-4 {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .gap-6 {
+    gap: 0.75rem;
+  }
+  
+  // Adjust product search
+  .mb-6 {
+    margin-bottom: 0.75rem;
+  }
+  
+  .px-4.py-3 {
+    padding: 0.625rem;
+    font-size: 0.8rem;
+  }
+  
+  // Adjust no products message
+  .py-16 {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+  
+  .p-8 {
+    padding: 1rem;
+  }
+  
+  .w-16.h-16 {
+    width: 3rem;
+    height: 3rem;
+  }
+  
+  .text-lg {
+    font-size: 1rem;
+  }
+  
+  .text-sm {
+    font-size: 0.8rem;
+  }
+}
+
+// Category selection animations responsive
+@media (max-width: 768px) {
+  @keyframes categorySelect {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.02);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes subcategorySelect {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.01);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  .category-selected {
+    animation: categorySelect 0.3s ease-out;
+  }
+  
+  .subcategory-selected {
+    animation: subcategorySelect 0.3s ease-out;
+  }
+}
+
+// Loading and error states responsive
+@media (max-width: 768px) {
+  .py-8 {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+  
+  .h-8.w-8 {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .w-8.h-8 {
+    width: 2rem;
+    height: 2rem;
+  }
+  
+  .text-gray-500 {
+    font-size: 0.875rem;
+  }
+  
+  .text-red-600 {
+    font-size: 0.875rem;
+  }
+  
+  .px-4.py-2 {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .py-8 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+  
+  .h-8.w-8 {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+  
+  .w-8.h-8 {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+  
+  .text-gray-500 {
+    font-size: 0.8rem;
+  }
+  
+  .text-red-600 {
+    font-size: 0.8rem;
+  }
+  
+  .px-4.py-2 {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.8rem;
   }
 }
 

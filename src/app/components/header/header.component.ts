@@ -14,6 +14,7 @@ import { WishlistService } from '../../services/wishlist.service';
 export class HeaderComponent implements OnInit {
   cartCount = 0;
   wishlistCount = 0;
+  isMobileMenuOpen = false;
 
   constructor(
     private cartService: CartService,
@@ -28,5 +29,13 @@ export class HeaderComponent implements OnInit {
     this.wishlistService.getWishlistItems().subscribe(items => {
       this.wishlistCount = this.wishlistService.getWishlistCount();
     });
+  }
+
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen = false;
   }
 } 
