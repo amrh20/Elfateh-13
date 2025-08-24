@@ -1,11 +1,13 @@
 // Essential Product Card Styles
 .product-card {
   position: relative;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
   
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(220, 38, 38, 0.15), 0 10px 20px rgba(0, 0, 0, 0.1);
+    border-color: rgba(220, 38, 38, 0.1);
   }
   
   .text-update {
@@ -100,10 +102,12 @@
 // Essential Hover Effects
 .product-card {
   img {
-    transition: transform 0.5s ease;
+    transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    filter: brightness(0.98);
     
     &:hover {
-      transform: scale(1.05);
+      transform: scale(1.08);
+      filter: brightness(1.05);
     }
   }
   
@@ -117,15 +121,18 @@
   }
   
   .wishlist-button {
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     
     &:hover {
-      background: rgba(239, 68, 68, 0.1);
-      transform: scale(1.1);
+      background: rgba(239, 68, 68, 0.15);
+      transform: scale(1.15) rotate(5deg);
+      box-shadow: 0 6px 15px rgba(239, 68, 68, 0.2);
     }
     
     &.in-wishlist {
-      background: rgba(239, 68, 68, 0.15);
+      background: rgba(239, 68, 68, 0.2);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
     }
   }
   
@@ -143,8 +150,9 @@
 }
 
 @keyframes badgePulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  0% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.9; }
 }
 
 // Enhanced responsive design for product card component

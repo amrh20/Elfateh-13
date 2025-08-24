@@ -1,12 +1,12 @@
-<div class="product-card bg-white rounded-2xl shadow-lg transition-all duration-500 overflow-hidden">
+<div class="product-card bg-white rounded-2xl shadow-lg transition-all duration-500 overflow-hidden backdrop-blur-sm">
   <!-- Product Image -->
   <div class="relative overflow-hidden bg-gray-100">
 
     <img [src]="product?.images[0] || product.image" [alt]="product.name" 
-         class="w-full  object-cover transition-transform duration-700" style="height: 320px">
+         class="w-full object-cover transition-transform duration-700 hover:shadow-inner" style="height: 320px">
     
     <!-- Product Badges Container -->
-    <div class="absolute top-4 right-4 flex flex-col gap-2 z-20">
+    <div class="absolute top-4 right-4 flex flex-col gap-2 z-20 transform transition-transform duration-500">
       
       <!-- Featured Badge -->
       <div *ngIf="product.featured" 
@@ -42,7 +42,7 @@
     <!-- Wishlist Button - Always Visible -->
     <button (click)="toggleWishlist()" 
             [@wishlistAnimation]="wishlistAnimationState"
-            class="absolute top-4 left-4 p-2.5 bg-white/95 backdrop-blur-sm rounded-full shadow-lg hover:bg-red-50 transition-all duration-300 hover:scale-110 z-10" style="position: absolute !important ;">
+            class="absolute top-4 left-4 p-2.5 bg-white/95 backdrop-blur-sm rounded-full shadow-lg hover:bg-red-50 transition-all duration-300 hover:scale-110 z-10 hover:shadow-red-200/50" style="position: absolute !important;">
       <svg class="w-5 h-5" [class.text-red-600]="isInWishlist" [class.text-gray-500]="!isInWishlist" 
            fill="currentColor" viewBox="0 0 24 24">
         <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
@@ -62,7 +62,7 @@
   </div>
 
   <!-- Product Info -->
-  <div class="p-6">
+  <div class="p-6 relative z-10 backdrop-filter backdrop-blur-sm bg-white/90">
     <!-- Product Title -->
     <h3 [@textAnimation]="textAnimationState"
         class="text-xl font-bold text-gray-800 mb-3 line-clamp-1 leading-tight">
@@ -111,7 +111,7 @@
       <div class="flex flex-col space-y-2">
         <!-- Current Price (After Discount) -->
         <div class="flex items-center space-x-3 space-x-reverse">
-          <span class="text-2xl font-bold text-red-600">
+          <span class="text-2xl font-bold text-red-600 transition-all duration-300 hover:text-red-700">
             {{ getCurrentPrice() }} ج.م
           </span>
           
@@ -124,7 +124,7 @@
         
         <!-- Discount Amount -->
         <div *ngIf="hasDiscount()" class="flex items-center space-x-2 space-x-reverse">
-          <span class="text-sm text-green-600 font-semibold">
+          <span class="text-sm text-green-600 font-semibold bg-green-50 px-2 py-0.5 rounded-md">
             توفير {{ getDiscountAmount() }} ج.م
           </span>
           <span class="text-xs text-gray-500">
@@ -134,7 +134,7 @@
       </div>
       
       <!-- Brand Badge -->
-      <span *ngIf="product.brand" class="text-sm text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full font-medium">
+      <span *ngIf="product.brand" class="text-sm text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full font-medium hover:bg-gray-200 transition-all duration-300">
         {{ product.brand }}
       </span>
     </div>
@@ -144,15 +144,16 @@
       <button (click)="addToCart()" 
               [@cartAnimation]="cartAnimationState"
               [disabled]="!product.stock"
-              class="flex-1 bg-red-600 text-white py-3 px-4 rounded-xl font-semibold hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-300 shadow-md hover:shadow-lg">
-        {{ product.stock ? 'أضف للسلة' : 'غير متوفر' }}
+              class="flex-1 bg-gradient-to-r from-red-500 to-red-700 text-white py-3 px-4 rounded-xl font-semibold hover:from-red-600 hover:to-red-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-red-500/30 relative overflow-hidden group">
+        <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-red-600 to-red-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform scale-x-0 group-hover:scale-x-100 origin-left"></span>
+        <span class="relative z-10">{{ product.stock ? 'أضف للسلة' : 'غير متوفر' }}</span>
       </button>
       
       <a [routerLink]="['/product', product._id]" 
-         class="border-2 border-red-600 text-red-600 py-3 px-4 rounded-xl font-semibold hover:bg-red-600 hover:text-white transition-all duration-300 transform hover:scale-105">
+         class="border-2 border-red-600 text-red-600 py-3 px-4 rounded-xl font-semibold hover:bg-red-600 hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-red-200/50">
         التفاصيل
 
       </a>
     </div>
   </div>
-</div> 
+</div>
