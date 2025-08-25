@@ -107,6 +107,46 @@ import { CartItem } from '../../models/product.model';
                 </div>
               </div>
               
+              <!-- Coupon Section -->
+              <div class="border-t border-gray-200 pt-4 mb-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">كوبون الخصم</h3>
+                
+                <!-- Coupon Input -->
+                <div class="flex space-x-2 space-x-reverse mb-3">
+                  <input type="text" [(ngModel)]="couponCode" 
+                         placeholder="أدخل كود الكوبون"
+                         class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 text-sm"
+                         [class.border-green-500]="isCouponValid"
+                         [class.border-red-500]="!isCouponValid && couponMessage">
+                  <button (click)="applyCoupon()" 
+                          class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm">
+                    تطبيق
+                  </button>
+                </div>
+                
+                <!-- Coupon Message -->
+                <div *ngIf="couponMessage" 
+                     [class]="isCouponValid ? 'text-green-600 text-sm' : 'text-red-600 text-sm'"
+                     class="mb-3">
+                  {{ couponMessage }}
+                </div>
+                
+                <!-- Applied Coupon -->
+                <div *ngIf="appliedCoupon" 
+                     class="flex items-center justify-between bg-green-50 border border-green-200 rounded-md p-3">
+                  <div class="flex items-center space-x-2 space-x-reverse">
+                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="text-green-800 font-medium">{{ appliedCoupon }}</span>
+                  </div>
+                  <button (click)="removeCoupon()" 
+                          class="text-red-600 hover:text-red-800 text-sm">
+                    إزالة
+                  </button>
+                </div>
+              </div>
+              
               <!-- Totals -->
               <div class="border-t border-gray-200 pt-4 space-y-3">
                 <div class="flex justify-between">
@@ -117,6 +157,12 @@ import { CartItem } from '../../models/product.model';
                 <div class="flex justify-between">
                   <span class="text-gray-600">الخصم:</span>
                   <span class="font-semibold text-green-600">-{{ discount }} ج.م</span>
+                </div>
+                
+                <!-- Coupon Discount -->
+                <div *ngIf="couponDiscount > 0" class="flex justify-between">
+                  <span class="text-gray-600">خصم الكوبون:</span>
+                  <span class="font-semibold text-green-600">-{{ couponDiscount }} ج.م</span>
                 </div>
                 
                 <div class="flex justify-between">
@@ -173,6 +219,13 @@ export class CheckoutComponent implements OnInit {
   isLoading: boolean = false;
   paymentMethod: string = 'cash';
   
+  // Coupon functionality
+  couponCode: string = '';
+  appliedCoupon: string = '';
+  couponDiscount: number = 0;
+  isCouponValid: boolean = false;
+  couponMessage: string = '';
+  
   deliveryInfo = {
     fullName: '',
     phone: '',
@@ -184,7 +237,7 @@ export class CheckoutComponent implements OnInit {
 
   subtotal = 0;
   discount = 0;
-  deliveryFee = 20;
+  deliveryFee = 20; // Fixed shipping cost
   total = 0;
 
   constructor(
@@ -215,8 +268,60 @@ export class CheckoutComponent implements OnInit {
       return sum;
     }, 0);
 
-    // Calculate total
-    this.total = this.cartService.getTotalPrice() + this.deliveryFee;
+    // Calculate total with coupon and shipping
+    this.total = this.subtotal - this.discount - this.couponDiscount + this.deliveryFee;
+  }
+
+  applyCoupon(): void {
+    if (!this.couponCode.trim()) {
+      this.couponMessage = 'يرجى إدخال كود الكوبون';
+      this.isCouponValid = false;
+      return;
+    }
+
+    // Simulate coupon validation - you can replace this with actual API call
+    const validCoupons: { [key: string]: number } = {
+      'WELCOME10': 10, // 10% discount
+      'SAVE20': 20,    // 20% discount
+      'FREESHIP': 20,  // Free shipping (20 LE)
+      'DISCOUNT50': 50 // 50 LE discount
+    };
+
+    const coupon = this.couponCode.trim().toUpperCase();
+    
+    if (validCoupons[coupon]) {
+      this.appliedCoupon = coupon;
+      this.isCouponValid = true;
+      
+      if (coupon === 'FREESHIP') {
+        this.couponDiscount = this.deliveryFee;
+        this.couponMessage = 'تم تطبيق الكوبون! الشحن مجاني';
+      } else if (coupon === 'DISCOUNT50') {
+        this.couponDiscount = 50;
+        this.couponMessage = 'تم تطبيق الكوبون! خصم 50 جنيه';
+      } else {
+        // Percentage discount
+        const discountPercentage = validCoupons[coupon];
+        this.couponDiscount = (this.subtotal * discountPercentage) / 100;
+        this.couponMessage = `تم تطبيق الكوبون! خصم ${discountPercentage}%`;
+      }
+      
+      this.calculateTotals();
+    } else {
+      this.appliedCoupon = '';
+      this.couponDiscount = 0;
+      this.isCouponValid = false;
+      this.couponMessage = 'كود الكوبون غير صحيح';
+    }
+  }
+
+  removeCoupon(): void {
+    this.appliedCoupon = '';
+    this.couponDiscount = 0;
+    this.couponCode = '';
+    this.isCouponValid = false;
+    this.couponMessage = '';
+    this.calculateTotals();
   }
 
   getItemPrice(item: CartItem): number {

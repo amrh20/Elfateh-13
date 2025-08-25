@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, ViewportScroller } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CartService } from '../../services/cart.service';
 import { CartItem } from '../../models/product.model';
@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, FormsModule],
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.scss']
 })
@@ -20,6 +20,24 @@ export class CartComponent implements OnInit {
   subtotal = 0;
   discount = 0;
   total = 0;
+  
+  // Coupon functionality
+  couponCode: string = '';
+  appliedCoupon: string = '';
+  couponDiscount: number = 0;
+  isCouponValid: boolean = false;
+  couponMessage: string = '';
+  
+  // Fixed shipping cost
+  deliveryFee: number = 20;
+  
+  // Authentication popup
+  showAuthPopup: boolean = false;
+  isLoginMode: boolean = true;
+  authForm: FormGroup;
+  isAuthLoading: boolean = false;
+  authMessage: string = '';
+  
   checkoutForm: FormGroup;
   isSubmitting = false;
   currentStep = 1; // Step 1: Cart Review, Step 2: Payment Details
@@ -39,6 +57,12 @@ export class CartComponent implements OnInit {
       city: ['', [Validators.required, Validators.minLength(2)]],
       additionalNotes: [''],
       paymentMethod: ['cash_on_delivery', Validators.required]
+    });
+    
+    this.authForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      fullName: ['', [Validators.required, Validators.minLength(3)]]
     });
   }
 
@@ -72,17 +96,82 @@ export class CartComponent implements OnInit {
       return sum + (originalPrice * item.quantity);
     }, 0);
 
-    // Calculate discount
-    this.discount = this.cartItems.reduce((sum, item) => {
-      if (item.product.originalPrice) {
-        const savings = (item.product.originalPrice - item.product.price) * item.quantity;
-        return sum + savings;
-      }
-      return sum;
-    }, 0);
+    // Calculate discount only if there's a valid coupon
+    if (this.appliedCoupon) {
+      this.discount = this.cartItems.reduce((sum, item) => {
+        if (item.product.originalPrice) {
+          const savings = (item.product.originalPrice - item.product.price) * item.quantity;
+          return sum + savings;
+        }
+        return sum;
+      }, 0);
+    } else {
+      this.discount = 0;
+    }
 
-    // Calculate total
-    this.total = this.cartService.getTotalPrice();
+    // Calculate total with coupon and shipping
+    this.total = this.subtotal - this.discount - this.couponDiscount + this.deliveryFee;
+  }
+
+  applyCoupon(): void {
+    // Check if user is authenticated
+    const token = localStorage.getItem('token');
+    if (!token) {
+      this.showAuthPopup = true;
+      this.isLoginMode = true;
+      this.couponMessage = 'يرجى تسجيل الدخول أولاً لاستخدام الكوبون';
+      return;
+    }
+
+    if (!this.couponCode.trim()) {
+      this.couponMessage = 'يرجى إدخال كود الكوبون';
+      this.isCouponValid = false;
+      return;
+    }
+
+    // Simulate coupon validation - you can replace this with actual API call
+    const validCoupons: { [key: string]: number } = {
+      'WELCOME10': 10, // 10% discount
+      'SAVE20': 20,    // 20% discount
+      'FREESHIP': 20,  // Free shipping (20 LE)
+      'DISCOUNT50': 50 // 50 LE discount
+    };
+
+    const coupon = this.couponCode.trim().toUpperCase();
+    
+    if (validCoupons[coupon]) {
+      this.appliedCoupon = coupon;
+      this.isCouponValid = true;
+      
+      if (coupon === 'FREESHIP') {
+        this.couponDiscount = this.deliveryFee;
+        this.couponMessage = 'تم تطبيق الكوبون! الشحن مجاني';
+      } else if (coupon === 'DISCOUNT50') {
+        this.couponDiscount = 50;
+        this.couponMessage = `تم تطبيق الكوبون! خصم ${this.couponDiscount} جنيه`;
+      } else {
+        // Percentage discount
+        const discountPercentage = validCoupons[coupon];
+        this.couponDiscount = (this.subtotal * discountPercentage) / 100;
+        this.couponMessage = `تم تطبيق الكوبون! خصم ${discountPercentage}%`;
+      }
+      
+      this.calculateTotals();
+    } else {
+      this.appliedCoupon = '';
+      this.couponDiscount = 0;
+      this.isCouponValid = false;
+      this.couponMessage = 'كود الكوبون غير صحيح';
+    }
+  }
+
+  removeCoupon(): void {
+    this.appliedCoupon = '';
+    this.couponDiscount = 0;
+    this.couponCode = '';
+    this.isCouponValid = false;
+    this.couponMessage = '';
+    this.calculateTotals();
   }
 
   getItemPrice(item: CartItem): number {
@@ -98,51 +187,40 @@ export class CartComponent implements OnInit {
   }
 
   async submitOrder(): Promise<void> {
-    if (this.checkoutForm.invalid) {
-      this.markFormGroupTouched();
-      return;
-    }
+    if (this.checkoutForm.invalid) return;
 
     this.isSubmitting = true;
 
     try {
-      const orderData = {
-        customerInfo: {
-          name: this.checkoutForm.value.fullName,
-          email: 'customer@example.com', // You might want to add email field to the form
-          phone: this.checkoutForm.value.mobileNumber,
-          address: {
-            street: this.checkoutForm.value.deliveryAddress,
-            city: this.checkoutForm.value.city,
-            // state: 'Cairo', // Cairo Governorate
-            // zipCode: '11511', // Main Cairo postal code
-            // country: 'Egypt'
-          }
-        },
-        items: this.cartItems.map(item => ({
-          product: item.product._id || item.product.id,
-          quantity: item.quantity
-        })),
-        notes: this.checkoutForm.value.additionalNotes || 'No additional notes'
+      // Create order object
+      const order = {
+        items: this.cartItems,
+        totalAmount: this.total,
+        deliveryInfo: this.checkoutForm.value,
+        couponCode: this.appliedCoupon,
+        couponDiscount: this.couponDiscount,
+        deliveryFee: this.deliveryFee,
+        orderDate: new Date(),
+        status: 'pending'
       };
 
-      const headers = new HttpHeaders({
-        'Content-Type': 'application/json'
-      });
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
-      const response = await this.http.post(`${environment.apiUrl}/orders`, orderData, { headers }).toPromise();
-      
-      console.log('Order created successfully:', response);
-      
-      // Clear cart after successful order
+      // Clear cart
       this.cartService.clearCart();
-      
-      // Show success dialog instead of alert
+
+      // Show success dialog
       this.showSuccessDialog = true;
-      
+
+      // After 3 seconds, redirect to home page
+      setTimeout(() => {
+        this.closeSuccessDialog();
+        this.router.navigate(['/']);
+      }, 3000);
+
     } catch (error) {
-      console.error('Error creating order:', error);
-      alert('حدث خطأ أثناء إنشاء الطلب. يرجى المحاولة مرة أخرى.');
+      console.error('Error submitting order:', error);
     } finally {
       this.isSubmitting = false;
     }
@@ -191,5 +269,72 @@ export class CartComponent implements OnInit {
 
   canProceedToPayment(): boolean {
     return this.cartItems.length > 0;
+  }
+
+  // Authentication methods
+  toggleAuthMode(): void {
+    this.isLoginMode = !this.isLoginMode;
+    this.authMessage = '';
+    this.authForm.reset();
+  }
+
+  async submitAuth(): Promise<void> {
+    if (this.authForm.invalid) return;
+
+    this.isAuthLoading = true;
+    this.authMessage = '';
+
+    try {
+      if (this.isLoginMode) {
+        await this.login();
+      } else {
+        await this.register();
+      }
+    } catch (error) {
+      this.authMessage = 'حدث خطأ، يرجى المحاولة مرة أخرى';
+    } finally {
+      this.isAuthLoading = false;
+    }
+  }
+
+  private async login(): Promise<void> {
+    const { email, password } = this.authForm.value;
+    
+    const response = await this.http.post(`${environment.apiUrl}/auth/login`, {
+      email,
+      password
+    }).toPromise();
+
+    if (response && (response as any).token) {
+      localStorage.setItem('token', (response as any).token);
+      this.showAuthPopup = false;
+      this.authForm.reset();
+      this.authMessage = 'تم تسجيل الدخول بنجاح!';
+      
+      // Auto-apply the coupon after successful login
+      setTimeout(() => {
+        this.applyCoupon();
+      }, 1000);
+    }
+  }
+
+  private async register(): Promise<void> {
+    const { email, password, fullName } = this.authForm.value;
+    
+    // First register
+    await this.http.post(`${environment.apiUrl}/auth/register`, {
+      email,
+      password,
+      fullName
+    }).toPromise();
+
+    // Then auto-login
+    await this.login();
+  }
+
+  closeAuthPopup(): void {
+    this.showAuthPopup = false;
+    this.authForm.reset();
+    this.authMessage = '';
   }
 } 
