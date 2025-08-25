@@ -489,3 +489,245 @@
     }
   }
 }
+
+// Success Dialog Styles
+.success-dialog {
+  animation: fadeInScale 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+// Success dialog backdrop
+.fixed.inset-0.bg-black.bg-opacity-75 {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Success dialog container
+.relative.transform.overflow-hidden.rounded-2xl {
+  animation: slideInUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// Success icon animation
+.bg-gradient-to-br.from-green-400.to-green-600 {
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: shimmer 2s infinite;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+// Success icon container
+.mx-auto.flex.h-24.w-24 {
+  animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.3s both;
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Success icon SVG
+.h-12.w-12.text-white {
+  animation: checkmarkDraw 0.6s ease-out 0.8s both;
+}
+
+@keyframes checkmarkDraw {
+  0% {
+    stroke-dasharray: 0 100;
+    opacity: 0;
+  }
+  100% {
+    stroke-dasharray: 100 100;
+    opacity: 1;
+  }
+}
+
+// Content animation
+.px-6.py-8.text-center {
+  animation: fadeInUp 0.6s ease-out 0.4s both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Order details box
+.bg-gray-50.rounded-lg.p-4 {
+  animation: slideInRight 0.5s ease-out 0.6s both;
+  border: 1px solid rgba(229, 231, 235, 0.5);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// Action button
+.bg-gradient-to-r.from-red-500.to-red-700 {
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s ease;
+  }
+  
+  &:hover::before {
+    left: 100%;
+  }
+}
+
+// Responsive improvements for success dialog
+@media (max-width: 768px) {
+  .max-w-md {
+    max-width: 90vw;
+    margin: 1rem;
+  }
+  
+  .p-8 {
+    padding: 1.5rem;
+  }
+  
+  .h-24.w-24 {
+    height: 5rem;
+    width: 5rem;
+  }
+  
+  .h-12.w-12 {
+    height: 2.5rem;
+    width: 2.5rem;
+  }
+  
+  .text-2xl {
+    font-size: 1.5rem;
+  }
+  
+  .px-6.py-8 {
+    padding: 1rem 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .max-w-md {
+    max-width: 95vw;
+    margin: 0.5rem;
+  }
+  
+  .p-8 {
+    padding: 1rem;
+  }
+  
+  .h-24.w-24 {
+    height: 4rem;
+    width: 4rem;
+  }
+  
+  .h-12.w-12 {
+    height: 2rem;
+    width: 2rem;
+  }
+  
+  .text-2xl {
+    font-size: 1.25rem;
+  }
+  
+  .px-6.py-8 {
+    padding: 0.75rem 1rem;
+  }
+  
+  .text-sm {
+    font-size: 0.75rem;
+  }
+}
+.btn-main {
+  background-color: #dc2626;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+}

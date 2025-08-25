@@ -85,9 +85,10 @@
               <swiper-slide *ngFor="let category of categories">
                 <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border-2 border-gray-100 hover:border-red-200 transform hover:-translate-y-2 category-card">
                   <!-- Enhanced Image Container -->
-                  <div class="relative overflow-hidden category-image p-2">
+                  <div class="relative overflow-hidden category-image p-2" style="display: flex; justify-content: center; align-items: center;">
                     <img [src]="getCleanImageUrl(category.image)" [alt]="category.name" 
-                         class="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-700">
+                         class="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-700"
+                         style="width:250px;height: 250px">
                     
                     <!-- Enhanced Product Count Badge -->
                     <div class="absolute top-4 right-4 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-full shadow-lg backdrop-blur-sm category-badge">
@@ -168,7 +169,7 @@
       </section>
   
       <!-- Best Sellers -->
-      <section class="py-20 bg-gradient-to-b from-white to-gray-50">
+      <section class="py-20 bg-gradient-to-b from-white to-gray-50" *ngIf="(bestSellers?.length || 0) > 0">
         <div class="container mx-auto px-4">
           <div class="flex items-center justify-between mb-12">
             <h2 class="heading-2">الأكثر مبيعاً</h2>
@@ -200,7 +201,7 @@
       </section>
   
       <!-- Offers Section -->
-      <section class="py-20">
+      <section class="py-20" *ngIf="(onSaleProducts?.length || 0) > 0">
         <div class="container mx-auto px-4">
           <div class="flex items-center justify-between mb-12">
             <h2 class="heading-2">العروض الخاصة</h2>

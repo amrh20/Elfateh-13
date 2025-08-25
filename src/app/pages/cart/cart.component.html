@@ -358,4 +358,67 @@
       </a>
     </div>
   </div>
+
+  <!-- Success Dialog -->
+  <div *ngIf="showSuccessDialog" class="fixed inset-0 z-50 overflow-y-auto">
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm transition-opacity"></div>
+    
+    <!-- Dialog Container -->
+    <div class="flex min-h-full items-center justify-center p-4 text-center">
+      <div class="relative transform overflow-hidden rounded-2xl bg-white text-right shadow-2xl transition-all w-full max-w-md success-dialog">
+        <!-- Success Icon -->
+        <div class="bg-gradient-to-br from-green-400 to-green-600 p-8 text-center">
+          <div class="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-white bg-opacity-20">
+            <svg class="h-12 w-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="px-6 py-8 text-center">
+          <h3 class="text-2xl font-bold text-gray-900 mb-4">تم إنشاء الطلب بنجاح! 🎉</h3>
+          <p class="text-gray-600 mb-8 leading-relaxed">
+            شكراً لك! تم استلام طلبك وسيتم التواصل معك قريباً لتأكيد التفاصيل وتحديد موعد التوصيل.
+          </p>
+          
+          <!-- Order Details -->
+          <div class="bg-gray-50 rounded-lg p-4 mb-6 text-right">
+            <h4 class="font-semibold text-gray-800 mb-3">تفاصيل الطلب:</h4>
+            <div class="space-y-2 text-sm">
+              <div class="flex justify-between">
+                <span class="text-gray-600">عدد المنتجات:</span>
+                <span class="font-medium">{{ totalItems }}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">المجموع الكلي:</span>
+                <span class="font-bold text-green-600">{{ total }} ج.م</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-600">طريقة الدفع:</span>
+                <span class="font-medium">{{ checkoutForm.value.paymentMethod === 'cash_on_delivery' ? 'الدفع عند الاستلام' : 'بطاقة ائتمان' }}</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button (click)="closeSuccessDialog()" 
+                    class=" btn-main w-full">
+              <svg class="w-5 h-5 inline-block ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+              </svg>
+              العودة للرئيسية
+            </button>
+          </div>
+          
+          <!-- Additional Info -->
+          <p class="text-xs text-gray-500 mt-6">
+            ستتلقى رسالة تأكيد على رقم هاتفك قريباً
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
