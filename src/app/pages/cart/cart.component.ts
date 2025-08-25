@@ -23,6 +23,7 @@ export class CartComponent implements OnInit {
   checkoutForm: FormGroup;
   isSubmitting = false;
   currentStep = 1; // Step 1: Cart Review, Step 2: Payment Details
+  showSuccessDialog = false; // New property for success dialog
 
   constructor(
     private cartService: CartService,
@@ -136,9 +137,8 @@ export class CartComponent implements OnInit {
       // Clear cart after successful order
       this.cartService.clearCart();
       
-      // Show success message and redirect
-      alert('تم إنشاء الطلب بنجاح!');
-      this.router.navigate(['/']);
+      // Show success dialog instead of alert
+      this.showSuccessDialog = true;
       
     } catch (error) {
       console.error('Error creating order:', error);
@@ -146,6 +146,12 @@ export class CartComponent implements OnInit {
     } finally {
       this.isSubmitting = false;
     }
+  }
+
+  // New method to close success dialog and redirect
+  closeSuccessDialog(): void {
+    this.showSuccessDialog = false;
+    this.router.navigate(['/']);
   }
 
   private markFormGroupTouched(): void {

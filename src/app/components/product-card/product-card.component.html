@@ -1,12 +1,22 @@
-<div class="product-card bg-white rounded-2xl shadow-lg transition-all duration-500 overflow-hidden backdrop-blur-sm">
+<div class="product-card bg-white rounded-2xl shadow-lg
+ transition-all duration-500 overflow-hidden backdrop-blur-sm" >
   <!-- Product Image -->
-  <div class="relative overflow-hidden bg-gray-100">
+  <div class="relative overflow-hidden bg-gray-100" style="display: flex; justify-content: center; align-items: center;">
 
     <img [src]="product?.images[0] || product.image" [alt]="product.name" 
-         class="w-full object-cover transition-transform duration-700 hover:shadow-inner" style="height: 320px">
+         class="w-full object-cover transition-transform duration-700 hover:shadow-inner" style="height: 320px;width:180px">
+    
+    <!-- Close Button (X) -->
+    <button class="absolute top-2 right-2 w-8 h-8 bg-white/90
+     backdrop-blur-sm rounded-full shadow-lg hover:bg-red-50 transition-all duration-300 hover:scale-110 z-30 
+     flex items-center justify-center hover:bg-red-100">
+      <svg class="w-4 h-4 text-gray-600 hover:text-red-600 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
     
     <!-- Product Badges Container -->
-    <div class="absolute top-4 right-4 flex flex-col gap-2 z-20 transform transition-transform duration-500">
+    <div class="absolute top-4 right-12 flex flex-col gap-2 z-20 transform transition-transform duration-500">
       
       <!-- Featured Badge -->
       <div *ngIf="product.featured" 
@@ -140,17 +150,19 @@
     </div>
 
     <!-- Actions -->
-    <div class="flex space-x-3 space-x-reverse">
+    <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 sm:space-x-reverse" style="display: flex; justify-content: center; align-items: center;gap: 10px;">
       <button (click)="addToCart()" 
               [@cartAnimation]="cartAnimationState"
               [disabled]="!product.stock"
-              class="flex-1 bg-gradient-to-r from-red-500 to-red-700 text-white py-3 px-4 rounded-xl font-semibold hover:from-red-600 hover:to-red-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-red-500/30 relative overflow-hidden group">
+              class="btn-main w-full">
         <!-- إزالة العناصر المتداخلة التي قد تسبب المشكلة -->
         <span class="relative z-10 !opacity-100">{{ product.stock ? 'أضف للسلة' : 'غير متوفر' }}</span>
       </button>
       
       <a [routerLink]="['/product', product._id]" 
-         class="border-2 border-red-600 text-red-600 py-3 px-4 rounded-xl font-semibold hover:bg-red-600 hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-red-200/50">
+         class="border-2 border-red-600 text-red-600 px-4 rounded-xl font-semibold hover:bg-red-600 
+         hover:text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg
+          hover:shadow-red-200/50 text-center mt-0" style="padding: 10px;margin: 0;">
         التفاصيل
 
       </a>

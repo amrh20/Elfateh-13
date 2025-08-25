@@ -26,7 +26,7 @@ register();
 export class HomeComponent implements OnInit {
   categories: Category[] = [];
   featuredProducts: Product[] = [];
-  bestSellers: Product[] = [];
+  bestSellers: any[] = [];
   onSaleProducts: Product[] = [];
   currentOrder: Order | null = null;
   

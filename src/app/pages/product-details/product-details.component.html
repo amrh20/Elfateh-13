@@ -16,10 +16,10 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
                 <!-- Product Images -->
           <div class="space-y-4">
-            <div class="bg-white rounded-lg shadow-md overflow-hidden group relative">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden group relative" style="display: flex; justify-content: center; align-items: center;">
               <img [src]="selectedImage" [alt]="product.name" 
                    class="w-full  object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer"
-                   (click)="openLightbox(selectedImage)" style="height: 400px">
+                   (click)="openLightbox(selectedImage)" style="height: 400px;width: 250px">
               
               <!-- Zoom Icon Overlay - Clickable -->
               <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer"
@@ -128,15 +128,15 @@
                 </div>
                 
                 <!-- Stock Info -->
-                <div class="text-sm text-gray-500">
+                <!-- <div class="text-sm text-gray-500">
                   متوفر: {{ product.stock }} قطعة
-                </div>
+                </div> -->
               </div>
 
                         <div class="flex space-x-4 space-x-reverse">
                 <button (click)="addToCart()" 
                         [disabled]="!product.stock"
-                        class="flex-1 bg-gradient-to-r from-red-600 to-red-700 text-white py-4 px-8 rounded-xl hover:from-red-700 hover:to-red-800 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 disabled:hover:scale-100 shadow-lg hover:shadow-xl font-semibold text-lg">
+                        class="btn-main w-full">
                   <div class="flex items-center justify-center space-x-2 space-x-reverse">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m6 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>
@@ -199,7 +199,7 @@
     
     <!-- Main Image -->
     <img [src]="lightboxImage" [alt]="product?.name" 
-         class="max-w-full max-h-full object-contain rounded-lg shadow-2xl">
+         class="max-w-full max-h-full object-contain rounded-lg shadow-2xl" style="height: 500px;">
     
             <!-- Navigation Arrows -->
         <div class="absolute inset-0 flex items-center justify-center justify-between pointer-events-none">

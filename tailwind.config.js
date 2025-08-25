@@ -2,6 +2,65 @@ module.exports = {
   content: [
     "./src/**/*.{html,ts,scss}",
   ],
+  safelist: [
+    // Critical color classes that should never be purged
+    'bg-red-500',
+    'bg-red-600', 
+    'bg-red-700',
+    'bg-red-800',
+    'text-red-500',
+    'text-red-600',
+    'text-red-700',
+    'text-white',
+    'border-red-200',
+    'border-red-300',
+    'border-red-400',
+    'border-red-500',
+    
+    // Gradient classes
+    'bg-gradient-to-r',
+    'from-red-500',
+    'to-red-700',
+    'from-red-600',
+    'to-red-800',
+    'hover:from-red-600',
+    'hover:to-red-800',
+    
+    // Button states
+    'hover:bg-red-600',
+    'hover:bg-red-700',
+    'hover:text-white',
+    'hover:scale-105',
+    'hover:-translate-y-2',
+    'hover:shadow-lg',
+    'hover:shadow-red-500/30',
+    
+    // Disabled states
+    'disabled:bg-gray-400',
+    'disabled:cursor-not-allowed',
+    
+    // Transitions
+    'transition-all',
+    'duration-300',
+    'transform',
+    
+    // Spacing and layout
+    'p-6',
+    'px-4',
+    'py-3',
+    'rounded-xl',
+    'rounded-lg',
+    'shadow-md',
+    'shadow-lg',
+    
+    // Flexbox
+    'flex',
+    'flex-1',
+    'items-center',
+    'justify-center',
+    'space-x-3',
+    'space-x-reverse'
+  ],
   theme: {
     extend: {
       colors: {
