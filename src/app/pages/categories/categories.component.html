@@ -176,11 +176,52 @@
 
         <!-- Products Grid -->
         <div *ngIf="!loading && filteredProducts.length > 0">
+          <!-- Products Count Info -->
+          <div class="mb-6 text-center products-count-info">
+            <p class="text-gray-600 text-sm">
+              عرض {{ ((currentPage - 1) * limit) + 1 }} - {{ Math.min(currentPage * limit, totalProducts) }} من {{ totalProducts }} منتج
+            </p>
+          </div>
+
           <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             <app-product-card *ngFor="let product of filteredProducts" 
                              [product]="product"
                              (addToCartEvent)="onAddToCart($event)">
             </app-product-card>
+          </div>
+
+          <!-- Pagination -->
+          <div *ngIf="totalPages > 1" class="mt-8 flex justify-center pagination pb-5" style="padding-bottom: 40px;" >
+            <nav class="flex items-center gap-2 my-5">
+              <!-- Previous Button -->
+              <button (click)="previousPage()" 
+                      [disabled]="currentPage === 1"
+                      class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+              </button>
+
+              <!-- Page Numbers -->
+              <button *ngFor="let page of getPageNumbers()" 
+                      (click)="goToPage(page)"
+                      [class]="'px-4 py-2 border rounded-lg transition-all duration-200 ' + 
+                              (currentPage === page ? 
+                                'bg-red-600 text-white border-red-600' : 
+                                'bg-white text-gray-700 border-gray-300 hover:bg-gray-50')"
+                      class="min-w-[40px]">
+                {{ page }}
+              </button>
+
+              <!-- Next Button -->
+              <button (click)="nextPage()" 
+                      [disabled]="currentPage === totalPages"
+                      class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </button>
+            </nav>
           </div>
         </div>
 
