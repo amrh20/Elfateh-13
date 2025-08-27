@@ -519,3 +519,65 @@ button:focus {
   border-color: #ef4444;
   background-color: #fef2f2;
 }
+
+// Pagination styles
+.pagination {
+  nav {
+    @media (max-width: 640px) {
+      gap: 0.5rem;
+      
+      button {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+        min-width: 36px;
+        
+        svg {
+          width: 1rem;
+          height: 1rem;
+        }
+      }
+    }
+    
+    @media (max-width: 480px) {
+      gap: 0.25rem;
+      
+      button {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+        min-width: 32px;
+        
+        svg {
+          width: 0.875rem;
+          height: 0.875rem;
+        }
+      }
+    }
+  }
+}
+
+// Pagination button animations
+.pagination button {
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+  
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  &.active {
+    transform: scale(1.05);
+  }
+}
+
+// Products count info responsive
+.products-count-info {
+  @media (max-width: 640px) {
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
+  }
+}

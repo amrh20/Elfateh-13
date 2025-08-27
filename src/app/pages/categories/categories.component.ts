@@ -25,6 +25,16 @@ export class CategoriesComponent implements OnInit {
   productSearch: string = '';
   loading: boolean = false;
   error: string | null = null;
+  
+  // Pagination properties
+  currentPage: number = 1;
+  totalPages: number = 1;
+  totalProducts: number = 0;
+  limit: number = 12;
+  pagination: any = null;
+  
+  // Make Math available in template
+  Math = Math;
 
   constructor(
     private productService: ProductService,
@@ -199,29 +209,38 @@ export class CategoriesComponent implements OnInit {
     });
   }
 
-  loadProductsBySubcategory(subCategoryId: string): void {
+  loadProductsBySubcategory(subCategoryId: string, page: number = 1): void {
     this.loading = true;
     this.error = null;
+    this.currentPage = page;
     
-    console.log('Loading products for subcategory:', subCategoryId);
-    
-    // Call the subcategory products API endpoint
-    this.http.get<any>(`${environment.apiUrl}/products/subcategory/${subCategoryId}`).subscribe({
+    // Call the subcategory products API endpoint with pagination
+    const url = `${environment.apiUrl}/products/subcategory/${subCategoryId}?page=${page}&limit=${this.limit}`;
+    this.http.get<any>(url).subscribe({
       next: (response) => {
-        console.log('Subcategory products API response:', response);
+        console.log('API Response:', response);
         
         if (response.success && response.data) {
           this.filteredProducts = response.data;
-          console.log('Products loaded for subcategory:', subCategoryId, response.data);
-          console.log('Products count:', response.data.length);
+          
+          // Handle pagination info
+          if (response.pagination) {
+            this.pagination = response.pagination;
+            this.currentPage = response.pagination.current || page;
+            this.totalPages = response.pagination.pages || 1;
+            this.totalProducts = response.pagination.total || 0;
+          }
         } else if (Array.isArray(response)) {
-          // Handle direct array response
+          // Handle direct array response (fallback)
           this.filteredProducts = response;
+          this.totalProducts = response.length;
+          this.totalPages = Math.ceil(response.length / this.limit);
           console.log('Products loaded (direct array):', response);
           console.log('Products count:', response.length);
         } else {
           this.error = 'Failed to load products for this subcategory';
           this.filteredProducts = [];
+          this.resetPagination();
           console.log('No products found for subcategory:', subCategoryId);
         }
         this.loading = false;
@@ -230,6 +249,7 @@ export class CategoriesComponent implements OnInit {
         console.error('Error loading products for subcategory:', subCategoryId, err);
         this.error = 'Error loading products. Please try again.';
         this.filteredProducts = [];
+        this.resetPagination();
         this.loading = false;
       }
     });
@@ -300,7 +320,8 @@ export class CategoriesComponent implements OnInit {
     console.log('SubCategory selected:', { subCategory, id, type: typeof subCategory });
     
     this.selectedSubCategoryId = id;
-    this.loadProductsBySubcategory(id);
+    this.resetPagination();
+    this.loadProductsBySubcategory(id, 1);
   }
 
   onProductSearch(): void {
@@ -335,8 +356,9 @@ export class CategoriesComponent implements OnInit {
   clearSearch(): void {
     this.productSearch = '';
     if (this.selectedSubCategoryId) {
-      // Reload products for the selected subcategory
-      this.loadProductsBySubcategory(this.selectedSubCategoryId);
+      // Reload products for the selected subcategory from page 1
+      this.resetPagination();
+      this.loadProductsBySubcategory(this.selectedSubCategoryId, 1);
     }
   }
 
@@ -452,5 +474,55 @@ export class CategoriesComponent implements OnInit {
     }
     
     return imageUrl;
+  }
+
+  // Pagination methods
+  resetPagination(): void {
+    this.currentPage = 1;
+    this.totalPages = 1;
+    this.totalProducts = 0;
+    this.pagination = null;
+  }
+
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages || page === this.currentPage) {
+      return;
+    }
+
+    if (this.selectedSubCategoryId) {
+      this.loadProductsBySubcategory(this.selectedSubCategoryId, page);
+    }
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.goToPage(this.currentPage + 1);
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.goToPage(this.currentPage - 1);
+    }
+  }
+
+  getPageNumbers(): number[] {
+    const pages: number[] = [];
+    const maxVisiblePages = 5;
+    
+    if (this.totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= this.totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      const start = Math.max(1, this.currentPage - Math.floor(maxVisiblePages / 2));
+      const end = Math.min(this.totalPages, start + maxVisiblePages - 1);
+      
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+    }
+    
+    return pages;
   }
 }
