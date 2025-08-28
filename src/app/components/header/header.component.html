@@ -73,19 +73,80 @@
         </a>
 
         <!-- Profile/Login -->
-        <a routerLink="/profile" class="p-3 text-gray-700 hover:text-red-600 transition-all duration-300 hover:scale-110 hover:bg-red-50 rounded-full group btn-animate">
-          <div class="relative">
-            <!-- User Icon -->
-            <svg class="w-7 h-7 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
-              </path>
-            </svg>
-            
-            <!-- Hover Effect -->
-            <div class="absolute inset-0 bg-red-100 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 shadow-inner"></div>
+        <div class="relative">
+          <button 
+            (click)="toggleUserMenu()"
+            class="p-3 text-gray-700 hover:text-red-600 transition-all duration-300 hover:scale-110 hover:bg-red-50 rounded-full group btn-animate">
+            <div class="relative">
+              <!-- User Icon -->
+              <svg class="w-7 h-7 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
+                </path>
+              </svg>
+              
+              <!-- Hover Effect -->
+              <div class="absolute inset-0 bg-red-100 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 shadow-inner"></div>
+            </div>
+          </button>
+
+          <!-- User Dropdown Menu -->
+          <div *ngIf="isUserMenuOpen" 
+               class="absolute left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50 animate-slideDown" style="width: 250px;">
+            <div class="py-2">
+              <!-- If user is not logged in -->
+              <ng-container *ngIf="!isLoggedIn">
+                <a routerLink="/login" 
+                   (click)="closeUserMenu()"
+                   class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">
+                  <svg class="w-4 h-4 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                  </svg>
+                  تسجيل الدخول
+                </a>
+                <a routerLink="/register" 
+                   (click)="closeUserMenu()"
+                   class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">
+                  <svg class="w-4 h-4 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                  </svg>
+                  إنشاء حساب جديد
+                </a>
+              </ng-container>
+
+              <!-- If user is logged in -->
+              <ng-container *ngIf="isLoggedIn">
+                <div class="px-4 py-2 text-sm text-gray-500 border-b border-gray-200">
+                  مرحباً، {{ userName }}
+                </div>
+                <a routerLink="/profile" 
+                   (click)="closeUserMenu()"
+                   class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">
+                  <svg class="w-4 h-4 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                  </svg>
+                  الملف الشخصي
+                </a>
+                <a routerLink="/track-order" 
+                   (click)="closeUserMenu()"
+                   class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">
+                  <svg class="w-4 h-4 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                  </svg>
+                  تتبع الطلبات
+                </a>
+                <button 
+                   (click)="logout()"
+                   class="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200 border-t border-gray-200">
+                  <svg class="w-4 h-4 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                  </svg>
+                  تسجيل الخروج
+                </button>
+              </ng-container>
+            </div>
           </div>
-        </a>
+        </div>
 
         <!-- Mobile Menu Button -->
         <button 

@@ -17,9 +17,13 @@
                 <!-- Product Images -->
           <div class="space-y-4">
             <div class="bg-white rounded-lg shadow-md overflow-hidden group relative" style="display: flex; justify-content: center; align-items: center;">
-              <img [src]="selectedImage" [alt]="product.name" 
-                   class="w-full  object-cover transition-transform duration-300 group-hover:scale-105 cursor-pointer"
-                   (click)="openLightbox(selectedImage)" style="height: 400px;width: 250px">
+              <div class="img" style="height: 450px;width: 250px">
+                <img [src]="selectedImage" [alt]="product.name" 
+                class="w-full  object-cover transition-transform duration-300 group-hover:scale-105
+                 cursor-pointer w-full h-full"
+                (click)="openLightbox(selectedImage)" >
+              </div>
+             
               
               <!-- Zoom Icon Overlay - Clickable -->
               <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center cursor-pointer"
@@ -191,7 +195,7 @@
   <div class="relative max-w-4xl max-h-full" (click)="$event.stopPropagation()">
     <!-- Close Button -->
     <button (click)="closeLightbox()" 
-            class="absolute -top-4 -right-4 z-10 bg-white/20 backdrop-blur-sm text-white p-2 rounded-full hover:bg-white/30 transition-all duration-300 hover:scale-110">
+            class="absolute -top-4 -right-4 z-10 bg-white/20 backdrop-blur-sm text-white p-2 rounded-full hover:bg-white/30 transition-all duration-300 hover:scale-110" style="background-color: #000;">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
       </svg>
