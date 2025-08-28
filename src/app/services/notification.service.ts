@@ -68,6 +68,20 @@ export class NotificationService {
   }
 
   /**
+   * Show success notification with simple message
+   */
+  showSuccess(message: string, options?: NotificationOptions): string {
+    return this.success('نجح', message, options);
+  }
+
+  /**
+   * Show error notification with simple message
+   */
+  showError(message: string, options?: NotificationOptions): string {
+    return this.error('خطأ', message, options);
+  }
+
+  /**
    * Show cart operation result
    */
   showCartResult(result: { success: boolean; message: string }): string {

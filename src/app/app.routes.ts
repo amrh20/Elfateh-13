@@ -10,6 +10,7 @@ export const routes: Routes = [
   { path: 'wishlist', loadComponent: () => import('./pages/wishlist/wishlist.component').then(m => m.WishlistComponent) },
   { path: 'profile', loadComponent: () => import('./pages/profile/profile.component').then(m => m.ProfileComponent) },
   { path: 'login', loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent) },
+  { path: 'register', loadComponent: () => import('./pages/register/register.component').then(m => m.RegisterComponent) },
   { path: 'track-order', loadComponent: () => import('./pages/track-order/track-order.component').then(m => m.TrackOrderComponent) },
   { path: 'about', loadComponent: () => import('./pages/about/about.component').then(m => m.AboutComponent) },
   { path: 'checkout', loadComponent: () => import('./pages/checkout/checkout.component').then(m => m.CheckoutComponent) },
