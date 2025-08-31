@@ -1,0 +1,66 @@
+{
+  "version": 2,
+  "name": "el-fateh-13",
+  "builds": [
+    {
+      "src": "dist/el-fateh-13/browser/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*\\.(js|mjs)$)",
+      "dest": "/dist/el-fateh-13/browser/$1",
+      "headers": {
+        "Content-Type": "application/javascript; charset=utf-8",
+        "Cache-Control": "public, max-age=31536000"
+      }
+    },
+    {
+      "src": "/(.*\\.css$)",
+      "dest": "/dist/el-fateh-13/browser/$1",
+      "headers": {
+        "Content-Type": "text/css; charset=utf-8",
+        "Cache-Control": "public, max-age=31536000"
+      }
+    },
+    {
+      "src": "/(.*\\.(png|jpg|jpeg|gif|ico|svg|webp)$)",
+      "dest": "/dist/el-fateh-13/browser/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000"
+      }
+    },
+    {
+      "src": "/(.*\\.(woff|woff2|ttf|eot|otf)$)",
+      "dest": "/dist/el-fateh-13/browser/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000",
+        "Access-Control-Allow-Origin": "*"
+      }
+    },
+    {
+      "src": "/sw.js",
+      "dest": "/dist/el-fateh-13/browser/sw.js",
+      "headers": {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Content-Type": "application/javascript"
+      }
+    },
+    {
+      "src": "/manifest.json",
+      "dest": "/dist/el-fateh-13/browser/manifest.json",
+      "headers": {
+        "Content-Type": "application/json",
+        "Cache-Control": "public, max-age=86400"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/dist/el-fateh-13/browser/index.html",
+      "headers": {
+        "Cache-Control": "no-cache, no-store, must-revalidate"
+      }
+    }
+  ]
+}
