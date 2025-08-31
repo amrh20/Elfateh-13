@@ -2,12 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { NotificationService } from '../../services/notification.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, HttpClientModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
@@ -22,6 +24,7 @@ export class RegisterComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private http: HttpClient,
     private notificationService: NotificationService
   ) {}
 
@@ -31,14 +34,36 @@ export class RegisterComponent implements OnInit {
 
   initForm() {
     this.registerForm = this.fb.group({
-      fullName: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required]],
+      username: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, this.emailOrPhoneValidator]],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]],
-      acceptTerms: [false, [Validators.requiredTrue]]
+      confirmPassword: ['', [Validators.required]]
     }, {
       validators: this.passwordMatchValidator
     });
+  }
+
+  emailOrPhoneValidator(control: AbstractControl): { [key: string]: boolean } | null {
+    if (!control.value) {
+      return null; // Let required validator handle empty values
+    }
+
+    const value = control.value.trim();
+    
+    // Email validation regex
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    
+    // Phone validation regex (Egyptian phone numbers and international formats)
+    const phoneRegex = /^(\+?2)?01[0-9]{9}$|^\+?[1-9]\d{1,14}$/;
+    
+    const isValidEmail = emailRegex.test(value);
+    const isValidPhone = phoneRegex.test(value);
+    
+    if (!isValidEmail && !isValidPhone) {
+      return { invalidEmailOrPhone: true };
+    }
+    
+    return null;
   }
 
   passwordMatchValidator(control: AbstractControl): { [key: string]: boolean } | null {
@@ -77,6 +102,11 @@ export class RegisterComponent implements OnInit {
     this.showConfirmPassword = !this.showConfirmPassword;
   }
 
+  isEmail(value: string): boolean {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(value.trim());
+  }
+
   async onSubmit() {
     if (this.registerForm.invalid) {
       Object.keys(this.registerForm.controls).forEach(key => {
@@ -91,15 +121,27 @@ export class RegisterComponent implements OnInit {
     try {
       const formData = this.registerForm.value;
       
-      // محاكاة API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // تحديد ما إذا كان المدخل email أو phone
+      const emailOrPhone = formData.email.trim();
+      const isEmailInput = this.isEmail(emailOrPhone);
       
-      // هنا يتم استدعاء الـ API الفعلي
-      console.log('Register data:', {
-        fullName: formData.fullName,
-        email: formData.email,
+      // إعداد البيانات للـ API
+      const registerData: any = {
+        username: formData.username,
         password: formData.password
-      });
+      };
+      
+      // إضافة email أو phone حسب نوع المدخل
+      if (isEmailInput) {
+        registerData.email = emailOrPhone;
+      } else {
+        registerData.phone = emailOrPhone;
+      }
+      
+      // استدعاء الـ API
+      const response = await this.http.post(`${environment.apiUrl}/signup`, registerData).toPromise();
+      
+      console.log('Registration successful:', response);
       
       this.message = 'تم إنشاء الحساب بنجاح!';
       this.messageType = 'success';
@@ -111,8 +153,20 @@ export class RegisterComponent implements OnInit {
         this.router.navigate(['/login']);
       }, 1500);
       
-    } catch (error) {
-      this.message = 'حدث خطأ في إنشاء الحساب. يرجى المحاولة مرة أخرى.';
+    } catch (error: any) {
+      console.error('Registration error:', error);
+      
+      let errorMessage = 'حدث خطأ في إنشاء الحساب. يرجى المحاولة مرة أخرى.';
+      
+      if (error.status === 400) {
+        errorMessage = 'البيانات المدخلة غير صحيحة. يرجى التحقق من المعلومات.';
+      } else if (error.status === 409) {
+        errorMessage = 'هذا البريد الإلكتروني أو اسم المستخدم مستخدم بالفعل.';
+      } else if (error.status === 422) {
+        errorMessage = 'البيانات غير مكتملة أو غير صحيحة.';
+      }
+      
+      this.message = errorMessage;
       this.messageType = 'error';
       this.notificationService.showError('فشل في إنشاء الحساب');
     } finally {
