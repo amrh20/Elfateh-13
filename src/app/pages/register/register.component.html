@@ -4,7 +4,6 @@
     <div class="auth-page-header">
       <div class="auth-logo">
         <img src="assets/images/logo.png" alt="الفتح" class="logo-img">
-        <h1>الفتح</h1>
       </div>
       <h2>إنشاء حساب جديد</h2>
       <p>انضم إلينا واستفد من العروض والخدمات المميزة</p>
@@ -13,37 +12,37 @@
     <!-- Form Section -->
     <div class="auth-page-form">
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="auth-form">
-        <!-- Full Name -->
-        <div class="form-group">
+        <!-- Top Row: Username and Email/Phone -->
+        <div class="form-group full-width">
           <label>
-            الاسم الكامل <span class="required">*</span>
+            اسم المستخدم <span class="required">*</span>
           </label>
           <input 
             type="text" 
-            formControlName="fullName" 
-            placeholder="أدخل اسمك الكامل"
-            [class.error]="isFieldInvalid('fullName')">
-          <div *ngIf="isFieldInvalid('fullName')" class="error-text">
-            الاسم الكامل مطلوب
+            formControlName="username" 
+            placeholder="أدخل اسم المستخدم"
+            [class.error]="isFieldInvalid('username')">
+          <div *ngIf="isFieldInvalid('username')" class="error-text">
+            اسم المستخدم مطلوب (حرفان على الأقل)
           </div>
         </div>
 
-        <!-- Email/Phone -->
-        <div class="form-group">
+        <div class="form-group full-width">
           <label>
-            البريد الإلكتروني / رقم الهاتف <span class="required">*</span>
+            البريد الإلكتروني أو رقم الهاتف <span class="required">*</span>
           </label>
           <input 
             type="text" 
             formControlName="email" 
-            placeholder="رقم الهاتف او ادخل بريدك الإلكتروني"
+            placeholder="مثال: user@example.com أو 01012345678"
             [class.error]="isFieldInvalid('email')">
           <div *ngIf="isFieldInvalid('email')" class="error-text">
-            البريد الإلكتروني أو رقم الهاتف مطلوب
+            <span *ngIf="registerForm.get('email')?.errors?.['required']">البريد الإلكتروني أو رقم الهاتف مطلوب</span>
+            <span *ngIf="registerForm.get('email')?.errors?.['invalidEmailOrPhone']">يرجى إدخال بريد إلكتروني صحيح أو رقم هاتف صحيح</span>
           </div>
         </div>
         
-        <!-- Password -->
+        <!-- Bottom Row: Password fields side by side -->
         <div class="form-group">
           <label>
             كلمة المرور <span class="required">*</span>
@@ -72,7 +71,6 @@
           </div>
         </div>
 
-        <!-- Confirm Password -->
         <div class="form-group">
           <label>
             تأكيد كلمة المرور <span class="required">*</span>
@@ -102,17 +100,7 @@
           </div>
         </div>
 
-        <!-- Terms & Conditions -->
-        <div class="form-extras">
-          <label class="terms-checkbox">
-            <input type="checkbox" formControlName="acceptTerms" [class.error]="isFieldInvalid('acceptTerms')">
-            <span class="checkmark"></span>
-            أوافق على <a href="#" class="link">شروط الاستخدام</a> و <a href="#" class="link">سياسة الخصوصية</a>
-          </label>
-          <div *ngIf="isFieldInvalid('acceptTerms')" class="error-text">
-            يجب الموافقة على الشروط والأحكام
-          </div>
-        </div>
+
         
         <!-- Message -->
         <div *ngIf="message" 
