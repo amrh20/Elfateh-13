@@ -13,17 +13,17 @@
     <!-- Form Section -->
     <div class="auth-page-form">
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
-        <!-- Email/Phone -->
+        <!-- Username (Email/Phone) -->
         <div class="form-group">
           <label>
             البريد الإلكتروني / رقم الهاتف <span class="required">*</span>
           </label>
           <input 
             type="text" 
-            formControlName="email" 
+            formControlName="username" 
             placeholder="رقم الهاتف او ادخل بريدك الإلكتروني"
-            [class.error]="isFieldInvalid('email')">
-          <div *ngIf="isFieldInvalid('email')" class="error-text">
+            [class.error]="isFieldInvalid('username')">
+          <div *ngIf="isFieldInvalid('username')" class="error-text">
             البريد الإلكتروني أو رقم الهاتف مطلوب
           </div>
         </div>

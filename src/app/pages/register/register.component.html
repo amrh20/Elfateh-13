@@ -19,10 +19,10 @@
           </label>
           <input 
             type="text" 
-            formControlName="username" 
+            formControlName="fullName" 
             placeholder="أدخل اسم المستخدم"
-            [class.error]="isFieldInvalid('username')">
-          <div *ngIf="isFieldInvalid('username')" class="error-text">
+            [class.error]="isFieldInvalid('fullName')">
+          <div *ngIf="isFieldInvalid('fullName')" class="error-text">
             اسم المستخدم مطلوب (حرفان على الأقل)
           </div>
         </div>
@@ -33,12 +33,12 @@
           </label>
           <input 
             type="text" 
-            formControlName="email" 
+            formControlName="username" 
             placeholder="مثال: user@example.com أو 01012345678"
-            [class.error]="isFieldInvalid('email')">
-          <div *ngIf="isFieldInvalid('email')" class="error-text">
-            <span *ngIf="registerForm.get('email')?.errors?.['required']">البريد الإلكتروني أو رقم الهاتف مطلوب</span>
-            <span *ngIf="registerForm.get('email')?.errors?.['invalidEmailOrPhone']">يرجى إدخال بريد إلكتروني صحيح أو رقم هاتف صحيح</span>
+            [class.error]="isFieldInvalid('username')">
+          <div *ngIf="isFieldInvalid('username')" class="error-text">
+            <span *ngIf="registerForm.get('username')?.errors?.['required']">البريد الإلكتروني أو رقم الهاتف مطلوب</span>
+            <span *ngIf="registerForm.get('username')?.errors?.['invalidEmailOrPhone']">يرجى إدخال بريد إلكتروني صحيح أو رقم هاتف صحيح</span>
           </div>
         </div>
         

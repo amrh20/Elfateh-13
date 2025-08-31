@@ -2,14 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { NotificationService } from '../../services/notification.service';
-import { environment } from '../../../environments/environment';
+import { AuthService, RegisterRequest } from '../../services/auth.service';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
@@ -24,7 +23,7 @@ export class RegisterComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private http: HttpClient,
+    private authService: AuthService,
     private notificationService: NotificationService
   ) {}
 
@@ -34,8 +33,8 @@ export class RegisterComponent implements OnInit {
 
   initForm() {
     this.registerForm = this.fb.group({
-      username: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, this.emailOrPhoneValidator]],
+      fullName: ['', [Validators.required, Validators.minLength(2)]],
+      username: ['', [Validators.required, this.emailOrPhoneValidator]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]]
     }, {
@@ -121,55 +120,51 @@ export class RegisterComponent implements OnInit {
     try {
       const formData = this.registerForm.value;
       
-      // تحديد ما إذا كان المدخل email أو phone
-      const emailOrPhone = formData.email.trim();
-      const isEmailInput = this.isEmail(emailOrPhone);
-      
-      // إعداد البيانات للـ API
-      const registerData: any = {
-        username: formData.username,
+      // إعداد البيانات للـ API حسب المطلوب في الـ schema
+      const registerData: RegisterRequest = {
+        username: formData.username.trim(),   // email or phone
+        fullName: formData.fullName.trim(),   // user's display name
         password: formData.password
       };
       
-      // إضافة email أو phone حسب نوع المدخل
-      if (isEmailInput) {
-        registerData.email = emailOrPhone;
-      } else {
-        registerData.phone = emailOrPhone;
-      }
+      console.log('Attempting registration with:', { username: registerData.username, fullName: registerData.fullName });
       
-      // استدعاء الـ API
-      const response = await this.http.post(`${environment.apiUrl}/signup`, registerData).toPromise();
+      // استدعاء الـ API باستخدام AuthService
+      this.authService.register(registerData).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.message = 'تم إنشاء الحساب بنجاح!';
+            this.messageType = 'success';
+            
+            this.notificationService.showSuccess('تم إنشاء الحساب بنجاح');
+            
+            // التوجه لصفحة تسجيل الدخول
+            setTimeout(() => {
+              this.router.navigate(['/login']);
+            }, 1500);
+          } else {
+            // فشل في التسجيل
+            this.message = response.message || 'حدث خطأ في إنشاء الحساب';
+            this.messageType = 'error';
+            this.notificationService.showError(this.message);
+          }
+        },
+        error: (error) => {
+          console.error('Registration error:', error);
+          this.message = 'حدث خطأ في الاتصال بالخادم. يرجى المحاولة مرة أخرى.';
+          this.messageType = 'error';
+          this.notificationService.showError('فشل في إنشاء الحساب');
+        },
+        complete: () => {
+          this.isLoading = false;
+        }
+      });
       
-      console.log('Registration successful:', response);
-      
-      this.message = 'تم إنشاء الحساب بنجاح!';
-      this.messageType = 'success';
-      
-      this.notificationService.showSuccess('تم إنشاء الحساب بنجاح');
-      
-      // التوجه لصفحة تسجيل الدخول
-      setTimeout(() => {
-        this.router.navigate(['/login']);
-      }, 1500);
-      
-    } catch (error: any) {
-      console.error('Registration error:', error);
-      
-      let errorMessage = 'حدث خطأ في إنشاء الحساب. يرجى المحاولة مرة أخرى.';
-      
-      if (error.status === 400) {
-        errorMessage = 'البيانات المدخلة غير صحيحة. يرجى التحقق من المعلومات.';
-      } else if (error.status === 409) {
-        errorMessage = 'هذا البريد الإلكتروني أو اسم المستخدم مستخدم بالفعل.';
-      } else if (error.status === 422) {
-        errorMessage = 'البيانات غير مكتملة أو غير صحيحة.';
-      }
-      
-      this.message = errorMessage;
+    } catch (error) {
+      console.error('Unexpected error:', error);
+      this.message = 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.';
       this.messageType = 'error';
-      this.notificationService.showError('فشل في إنشاء الحساب');
-    } finally {
+      this.notificationService.showError('خطأ غير متوقع');
       this.isLoading = false;
     }
   }

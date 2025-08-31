@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { NotificationService } from '../../services/notification.service';
+import { AuthService, LoginRequest } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +22,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -30,7 +32,7 @@ export class LoginComponent implements OnInit {
 
   initForm() {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required]],
+      username: ['', [Validators.required]], // changed from 'email' to 'username' to match API
       password: ['', [Validators.required, Validators.minLength(6)]],
       rememberMe: [false]
     });
@@ -59,27 +61,50 @@ export class LoginComponent implements OnInit {
     try {
       const formData = this.loginForm.value;
       
-      // محاكاة API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // إعداد بيانات تسجيل الدخول للـ API
+      const loginRequest: LoginRequest = {
+        username: formData.username, // email or phone
+        password: formData.password
+      };
       
-      // هنا يتم استدعاء الـ API الفعلي
-      console.log('Login data:', formData);
+      console.log('Attempting login with:', { username: loginRequest.username });
       
-      this.message = 'تم تسجيل الدخول بنجاح!';
-      this.messageType = 'success';
-      
-      this.notificationService.showSuccess('تم تسجيل الدخول بنجاح');
-      
-      // التوجه للصفحة الرئيسية أو الصفحة المطلوبة
-      setTimeout(() => {
-        this.router.navigate(['/']);
-      }, 1500);
+      // استدعاء الـ API الفعلي
+      this.authService.login(loginRequest).subscribe({
+        next: (response) => {
+          if (response.success && response.data) {
+            this.message = 'تم تسجيل الدخول بنجاح!';
+            this.messageType = 'success';
+            
+            this.notificationService.showSuccess(`مرحباً ${response.data.user.name}!`);
+            
+            // التوجه للصفحة الرئيسية أو الصفحة المطلوبة
+            setTimeout(() => {
+              this.router.navigate(['/']);
+            }, 1500);
+          } else {
+            // فشل في تسجيل الدخول
+            this.message = response.message || 'حدث خطأ في تسجيل الدخول';
+            this.messageType = 'error';
+            this.notificationService.showError(this.message);
+          }
+        },
+        error: (error) => {
+          console.error('Login error:', error);
+          this.message = 'حدث خطأ في الاتصال بالخادم. يرجى المحاولة مرة أخرى.';
+          this.messageType = 'error';
+          this.notificationService.showError('فشل في تسجيل الدخول');
+        },
+        complete: () => {
+          this.isLoading = false;
+        }
+      });
       
     } catch (error) {
-      this.message = 'حدث خطأ في تسجيل الدخول. يرجى المحاولة مرة أخرى.';
+      console.error('Unexpected error:', error);
+      this.message = 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.';
       this.messageType = 'error';
-      this.notificationService.showError('فشل في تسجيل الدخول');
-    } finally {
+      this.notificationService.showError('خطأ غير متوقع');
       this.isLoading = false;
     }
   }
